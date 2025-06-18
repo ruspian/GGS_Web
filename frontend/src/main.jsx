@@ -5,12 +5,14 @@ import router from './router/Router';
 import { RouterProvider } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store/store';
+import { ToastProvider } from "@heroui/toast";
 import './index.css'
 
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <HeroUIProvider>
+      <ToastProvider placement='top-center' toastOffset={60} />
       <Provider store={store}>
         <RouterProvider router={router} />
       </Provider>

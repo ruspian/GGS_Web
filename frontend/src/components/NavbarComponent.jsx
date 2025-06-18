@@ -7,16 +7,22 @@ import {
   NavbarContent,
   NavbarItem,
   Button,
+  Avatar,
 } from "@heroui/react";
 import { useState } from "react";
 import LogoIcon from '/src/assets/logo.png';
 import { useLocation, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const NavbarComponent = () => {
   const [openMenu, setOpenMenu] = useState(false);
 
   // ambil lokasi path
   const location = useLocation();
+
+  // ambil data user dari redux
+  const userDetail = useSelector((state) => state.user);
+  console.log("userDetail", userDetail);
 
 
   const menuItems = [
@@ -70,19 +76,31 @@ const NavbarComponent = () => {
         ))}
       </NavbarContent>
 
-      <NavbarContent justify="end">
-        <NavbarItem>
-          <Link to="/daftar">
-            <Button
-              radius="sm"
-              color="success"
-              variant="bordered"
-            >
-              Daftar
-            </Button>
-          </Link>
-        </NavbarItem>
-      </NavbarContent>
+      {
+        userDetail.avatar ? (
+          <Avatar
+            isBordered
+            radius="sm"
+            src={userDetail.avatar}
+            size="sm"
+
+          />
+        ) : (
+          <NavbarContent justify="end">
+            <NavbarItem>
+              <Link to="/daftar">
+                <Button
+                  radius="sm"
+                  color="success"
+                  variant="bordered"
+                >
+                  Daftar
+                </Button>
+              </Link>
+            </NavbarItem>
+          </NavbarContent>
+        )
+      }
 
       <NavbarMenu>
         {menuItems.map((item, index) => (

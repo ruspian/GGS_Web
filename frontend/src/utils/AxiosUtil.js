@@ -1,5 +1,5 @@
 import axios from "axios";
-import getAPI, { BACKEND_URL } from "../src/common/getAPI";
+import getAPI, { BACKEND_URL } from "../common/getAPI";
 
 // fungsi untuk mengambil data
 const FetchFromAxios = axios.create({

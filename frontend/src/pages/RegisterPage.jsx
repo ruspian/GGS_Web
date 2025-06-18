@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Card, Form, Input, Checkbox, Button } from "@heroui/react";
+import { Card, Form, Input, Checkbox, Button, addToast } from "@heroui/react";
 import { Link, useNavigate } from "react-router-dom";
-import FetchFromAxios from "../../utils/AxiosUtil";
+import FetchFromAxios from "../utils/AxiosUtil";
 import getAPI from "../common/getAPI";
 
 const RegisterPage = () => {
@@ -68,12 +68,16 @@ const RegisterPage = () => {
 
       // jika gagal 
       if (response.data.error) {
-        console.log(response.data.message);
+        addToast({
+          title: response.data.message
+        });
       }
 
       // jika berhasil
       if (response.data.success) {
-        console.log(response.data.message);
+        addToast({
+          title: response.data.message
+        });
 
         // hapus errors dan submit
         setErrors({});
@@ -83,7 +87,9 @@ const RegisterPage = () => {
       }
 
     } catch (error) {
-      console.log(error);
+      addToast({
+        title: error.response.data.message
+      });
     }
   };
 
