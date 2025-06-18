@@ -1,0 +1,14 @@
+export const BACKEND_URL = "http://localhost:3000";
+
+const getAPI = {
+  register: {
+    url: "/api/user/register",
+    method: "POST",
+  },
+  refresh_token: {
+    url: "/api/user/refresh-token",
+    method: "POST",
+  },
+};
+
+export default getAPI;
