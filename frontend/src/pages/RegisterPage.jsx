@@ -84,11 +84,9 @@ const RegisterPage = () => {
 
     } catch (error) {
       console.log(error);
-
     }
-
-
   };
+
 
   return (
     <Card className="py-16 lg:py-16 lg:my-5 lg:w-80 lg:h-[70%] lg:mx-auto flex items-center justify-center" shadow="sm" >

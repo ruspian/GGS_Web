@@ -9,6 +9,14 @@ const getAPI = {
     url: "/api/user/refresh-token",
     method: "POST",
   },
+  login: {
+    url: "/api/user/login",
+    method: "POST",
+  },
+  user_details: {
+    url: "/api/user/user-detail",
+    method: "GET",
+  },
 };
 
 export default getAPI;

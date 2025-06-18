@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import { Card, Form, Input, Checkbox, Button } from "@heroui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import FetchFromAxios from "../../utils/AxiosUtil";
+import getAPI from "../common/getAPI";
+import { useDispatch } from "react-redux";
+import { setUserDetails } from "../store/userSliceRedux";
 
 const MasukPage = () => {
   const [password, setPassword] = useState("");
-  const [submitted, setSubmitted] = useState(null);
   const [errors, setErrors] = useState({});
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // password validation
   const getPasswordError = (value) => {
@@ -22,7 +28,40 @@ const MasukPage = () => {
     return null;
   };
 
-  const onSubmit = (e) => {
+  // fungsi untuk mengambil data detail user
+  const fetchUserDetails = async () => {
+    try {
+
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        console.log("Token tidak ditemukan");
+        return null;
+      }
+
+
+      const response = await FetchFromAxios({
+        ...getAPI.user_details,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // jika gagal
+      if (response.data.error) {
+        console.log(response.data.message);
+      }
+
+      // jika berhasil 
+      return response.data || response.data.data
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
+
+
+  // fungsi submit form
+  const onSubmit = async (e) => {
     e.preventDefault();
 
     // ambil data inputan
@@ -57,17 +96,50 @@ const MasukPage = () => {
       return;
     }
 
-    // Clear errors and submit
-    setErrors({});
-    setSubmitted(data);
+    try {
+      // kirim data ke backend
+      const response = await FetchFromAxios({
+        ...getAPI.login,
+        data: data
+      })
+
+      // cek jika gagal
+      if (response.data.error) {
+        console.log(response.data.message);
+      }
+
+      // jika sukses
+      if (response.data.success) {
+
+        console.log(response.data.message);
+
+        // simpan token ke local storage
+        localStorage.setItem("accessToken", response.data.data.accessToken);
+        localStorage.setItem("refreshToken", response.data.data.refreshToken);
+
+        // simpan data user ke redux
+        const getUserDetail = await fetchUserDetails();
+        dispatch(setUserDetails(getUserDetail));
+
+        // bersihkan error 
+        setErrors({});
+
+        // redirect ke halaman utama
+        navigate("/");
+
+      }
+    } catch (error) {
+      console.log(error);
+
+    }
   };
+
 
   return (
     <Card className="py-16 lg:py-16 mb-20 lg:my-10 lg:w-80 lg:h-[70%] lg:mx-auto flex items-center justify-center" shadow="sm" >
       <Form
         className="lg:w-72 flex justify-center items-center space-y-4"
         validationErrors={errors}
-        onReset={() => setSubmitted(null)}
         onSubmit={onSubmit}
       >
         <div className="flex flex-col gap-4 max-w-md">

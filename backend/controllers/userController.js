@@ -202,3 +202,38 @@ export async function refreshTokenController(req, res) {
     });
   }
 }
+
+// fungsi ambil data user login
+export const getUserLoginDetailsController = async (req, res) => {
+  try {
+    const userId = req.userId; // ambil dari authMiddleware
+
+    // cari user di database
+    const user = await UserModel.findById(userId).select(
+      "-password -refresh_token "
+    );
+
+    // cek apakah user ada
+    if (!user) {
+      return res.status(404).json({
+        message: "User tidak ditemukan!",
+        error: true,
+        success: false,
+      });
+    }
+
+    // jika berhasil
+    return res.status(200).json({
+      message: "Berhasil mengambil data user!",
+      error: false,
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.massage || "Kesalahan Pada Server, Coba Lagi Nanti!",
+      error: true,
+      success: false,
+    });
+  }
+};
