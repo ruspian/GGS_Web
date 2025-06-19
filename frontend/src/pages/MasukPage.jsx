@@ -72,6 +72,8 @@ const MasukPage = () => {
     }
   };
 
+
+
   return (
     <Card className="py-16 lg:py-16 mb-20 lg:my-10 lg:w-80 lg:h-[70%] lg:mx-auto flex items-center justify-center" shadow="sm">
       <Form
@@ -115,6 +117,7 @@ const MasukPage = () => {
             isInvalid={!!errors.terms}
             name="terms"
             value="true"
+            color="success"
             onValueChange={() => setErrors((prev) => ({ ...prev, terms: undefined }))}
           >
             <p className="text-xs">Saya setuju dengan syarat dan ketentuan</p>

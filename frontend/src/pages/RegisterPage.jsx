@@ -162,6 +162,7 @@ const RegisterPage = () => {
             name="terms"
             validationBehavior="aria"
             value="true"
+            color="success"
             onValueChange={() => setErrors((prev) => ({ ...prev, terms: undefined }))}
           >
             <p className="text-xs">Saya setuju dengan syarat dan ketentuan</p>

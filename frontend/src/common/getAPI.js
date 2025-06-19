@@ -17,6 +17,10 @@ const getAPI = {
     url: "/api/user/user-detail",
     method: "GET",
   },
+  logout: {
+    url: "/api/user/logout",
+    method: "GET",
+  },
 };
 
 export default getAPI;

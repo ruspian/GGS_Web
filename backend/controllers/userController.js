@@ -237,3 +237,39 @@ export const getUserLoginDetailsController = async (req, res) => {
     });
   }
 };
+
+// fungsi logout
+export const logoutUserController = async (req, res) => {
+  try {
+    const userId = req.userId; // ambil dari authMiddleware
+
+    console.log("userId", userId);
+
+    // hapus cookie
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    };
+    res.clearCookie("accessToken", cookieOptions);
+    res.clearCookie("refreshToken", cookieOptions);
+
+    // hapus refresh token dari database
+    const user = await UserModel.findByIdAndUpdate(userId, {
+      refresh_token: "",
+    });
+
+    // kembalikan response
+    return res.status(200).json({
+      message: "Logout berhasil!",
+      error: false,
+      success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.massage || "Kesalahan Pada Server, Coba Lagi Nanti!",
+      error: true,
+      success: false,
+    });
+  }
+};

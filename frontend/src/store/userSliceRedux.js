@@ -28,8 +28,19 @@ const userSlice = createSlice({
       state.status = action.payload.status;
       state.role = action.payload.role;
     },
+    logoutUser: (state) => {
+      state._id = "";
+      state.name = "";
+      state.email = "";
+      state.avatar = "";
+      state.mobile = "";
+      state.verify_email = "";
+      state.last_login_date = "";
+      state.status = "";
+      state.role = "";
+    },
   },
 });
 
-export const { setUserDetails } = userSlice.actions;
+export const { setUserDetails, logoutUser } = userSlice.actions;
 export default userSlice.reducer;

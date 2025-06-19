@@ -7,18 +7,24 @@ import {
   NavbarContent,
   NavbarItem,
   Button,
-  Avatar,
+  addToast,
 } from "@heroui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LogoIcon from '/src/assets/logo.png';
-import { useLocation, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import FetchFromAxios from "../utils/AxiosUtil";
+import getAPI from "../common/getAPI";
+import { logoutUser, setUserDetails } from "../store/userSliceRedux";
+import UserMenuComponent from "./UserMenuComponent";
 
 const NavbarComponent = () => {
   const [openMenu, setOpenMenu] = useState(false);
 
   // ambil lokasi path
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // ambil data user dari redux
   const userDetail = useSelector((state) => state.user);
@@ -33,7 +39,72 @@ const NavbarComponent = () => {
     { name: 'Kontak', path: '/kontak' },
   ];
 
-  // Fungsi untuk menangani navigasi dan status menu
+  useEffect(() => {
+
+    // fungsi untuk ambil data user
+    const loadUserFromToken = async () => {
+      // ambil token dari localStorage
+      const token = localStorage.getItem("accessToken");
+      if (!token) return;
+
+      try {
+        // ambil dan kirim ke backend untuk ambil data user
+        const res = await FetchFromAxios({
+          ...getAPI.user_details,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        });
+
+        // jika berhasil
+        if (res.data?.success) {
+          dispatch(setUserDetails(res.data.data));
+        }
+      } catch (err) {
+        console.error("Gagal ambil data user:", err?.response?.data?.message || err.message);
+      }
+    };
+
+    loadUserFromToken();
+  }, [dispatch]);
+
+
+  // Fungsi handle Logout
+  const handleLogout = async () => {
+    try {
+      // kirim reques ke backend
+      const response = await FetchFromAxios({
+        ...getAPI.logout,
+        headers: {
+          Authorization: `Bearer ${userDetail.accessToken}`,
+        },
+        withCredentials: true,
+      });
+
+      console.log("response", response);
+
+
+      // jika berhasil
+      if (response.data.success) {
+
+        // hapus token dari localstorage
+        dispatch(logoutUser())
+        localStorage.clear();
+
+        addToast({ title: response.data.message });
+
+        // arahkan ke dashboard
+        navigate("/");
+
+      }
+
+    } catch (error) {
+      console.log("error", error);
+
+      addToast({ title: error.response.data.message });
+    }
+  }
 
   return (
     <Navbar isBordered isMenuOpen={openMenu} onMenuOpenChange={setOpenMenu}>
@@ -77,14 +148,10 @@ const NavbarComponent = () => {
       </NavbarContent>
 
       {
-        userDetail.avatar ? (
-          <Avatar
-            isBordered
-            radius="sm"
-            src={userDetail.avatar}
-            size="sm"
+        userDetail._id ? (
 
-          />
+          <UserMenuComponent userDetail={userDetail} />
+
         ) : (
           <NavbarContent justify="end">
             <NavbarItem>
@@ -118,13 +185,12 @@ const NavbarComponent = () => {
         ))}
 
         <NavbarMenuItem>
-          <Link
-            className="w-full"
-            size="lg"
-            color="#F31260"
+          <p
+            onClick={handleLogout}
+            className="text-danger hover:cursor-pointer"
           >
             Keluar
-          </Link>
+          </p>
         </NavbarMenuItem>
       </NavbarMenu>
     </Navbar>

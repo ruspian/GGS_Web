@@ -4,6 +4,7 @@ import {
   refreshTokenController,
   registerUserController,
   getUserLoginDetailsController,
+  logoutUserController,
 } from "../controllers/userController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 
@@ -13,5 +14,6 @@ userRouter.post("/register", registerUserController);
 userRouter.post("/refresh-token", refreshTokenController);
 userRouter.post("/login", loginUserController);
 userRouter.get("/user-detail", authMiddleware, getUserLoginDetailsController);
+userRouter.get("/logout", authMiddleware, logoutUserController);
 
 export default userRouter;
