@@ -7,24 +7,29 @@ import {
   NavbarContent,
   NavbarItem,
   Button,
-  addToast,
+  useDisclosure,
+
 } from "@heroui/react";
 import { useEffect, useState } from "react";
 import LogoIcon from '/src/assets/logo.png';
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import FetchFromAxios from "../utils/AxiosUtil";
 import getAPI from "../common/getAPI";
-import { logoutUser, setUserDetails } from "../store/userSliceRedux";
+import { setUserDetails } from "../store/userSliceRedux";
 import UserMenuComponent from "./UserMenuComponent";
+import { LoginCurve } from 'iconsax-reactjs';
+import AuthComponent from "./AuthComponent";
 
 const NavbarComponent = () => {
   const [openMenu, setOpenMenu] = useState(false);
 
   // ambil lokasi path
   const location = useLocation();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  // const navigate = useNavigate();
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   // ambil data user dari redux
   const userDetail = useSelector((state) => state.user);
@@ -70,41 +75,7 @@ const NavbarComponent = () => {
   }, [dispatch]);
 
 
-  // Fungsi handle Logout
-  const handleLogout = async () => {
-    try {
-      // kirim reques ke backend
-      const response = await FetchFromAxios({
-        ...getAPI.logout,
-        headers: {
-          Authorization: `Bearer ${userDetail.accessToken}`,
-        },
-        withCredentials: true,
-      });
 
-      console.log("response", response);
-
-
-      // jika berhasil
-      if (response.data.success) {
-
-        // hapus token dari localstorage
-        dispatch(logoutUser())
-        localStorage.clear();
-
-        addToast({ title: response.data.message });
-
-        // arahkan ke dashboard
-        navigate("/");
-
-      }
-
-    } catch (error) {
-      console.log("error", error);
-
-      addToast({ title: error.response.data.message });
-    }
-  }
 
   return (
     <Navbar isBordered isMenuOpen={openMenu} onMenuOpenChange={setOpenMenu}>
@@ -155,15 +126,17 @@ const NavbarComponent = () => {
         ) : (
           <NavbarContent justify="end">
             <NavbarItem>
-              <Link to="/daftar">
-                <Button
-                  radius="sm"
-                  color="success"
-                  variant="bordered"
-                >
-                  Daftar
-                </Button>
-              </Link>
+              <Button
+                // onClick={() => navigate("/login")}
+                radius="sm"
+                color="success"
+                variant="bordered"
+                onPress={onOpen}
+              >
+                Masuk
+                <LoginCurve size="20" color="#37d67a" variant="Broken" />
+              </Button>
+              <AuthComponent isOpen={isOpen} onOpenChange={onOpenChange} />
             </NavbarItem>
           </NavbarContent>
         )
@@ -183,15 +156,6 @@ const NavbarComponent = () => {
             </Link>
           </NavbarMenuItem>
         ))}
-
-        <NavbarMenuItem>
-          <p
-            onClick={handleLogout}
-            className="text-danger hover:cursor-pointer"
-          >
-            Keluar
-          </p>
-        </NavbarMenuItem>
       </NavbarMenu>
     </Navbar>
   )

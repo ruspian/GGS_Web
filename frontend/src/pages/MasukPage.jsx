@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { addToast, Card, Form, Input, Checkbox, Button } from "@heroui/react";
+import { addToast, Card, Form, Input, Checkbox, Button, Spinner } from "@heroui/react";
 import { Link, useNavigate } from "react-router-dom";
 import FetchFromAxios from "../utils/AxiosUtil";
 import getAPI from "../common/getAPI";
@@ -9,8 +9,10 @@ import { setUserDetails } from "../store/userSliceRedux";
 const MasukPage = () => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
 
   // validasi password
   const getPasswordError = (value) => {
@@ -35,6 +37,8 @@ const MasukPage = () => {
     }
 
     try {
+      setLoading(true);
+
       // login ke server
       const response = await FetchFromAxios({
         ...getAPI.login,
@@ -69,6 +73,8 @@ const MasukPage = () => {
 
     } catch (err) {
       addToast({ title: err?.response?.data?.message || "Gagal login" });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,7 +131,16 @@ const MasukPage = () => {
           {errors.terms && <span className="text-danger text-small">{errors.terms}</span>}
 
           <Button className="w-full" color="success" type="submit" variant="bordered">
-            Masuk
+            {
+              loading ? (
+                <span className="flex items-center gap-2">
+                  <Spinner color="success" size="sm" variant="simple" />
+                  Loading
+                </span>
+              ) : (
+                "Masuk"
+              )
+            }
           </Button>
 
           <p className="text-xs mt-2">

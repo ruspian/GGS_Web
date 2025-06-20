@@ -7,6 +7,7 @@ import getAPI from "../common/getAPI";
 const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -60,6 +61,9 @@ const RegisterPage = () => {
 
     // kirim data ke backend
     try {
+
+      setLoading(true);
+
       const response = await FetchFromAxios({
         ...getAPI.register,
         data: data
@@ -90,6 +94,8 @@ const RegisterPage = () => {
       addToast({
         title: error.response.data.message
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -172,7 +178,16 @@ const RegisterPage = () => {
 
           <div className="flex gap-4">
             <Button className="w-full" color="success" type="submit" variant="bordered">
-              Daftar
+              {
+                loading ? (
+                  <span className="flex items-center gap-2">
+                    <Spinner color="success" size="sm" variant="simple" />
+                    Loading
+                  </span>
+                ) : (
+                  "Daftar"
+                )
+              }
             </Button>
           </div>
         </div>
