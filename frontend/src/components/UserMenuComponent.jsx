@@ -62,7 +62,7 @@ const UserMenuComponent = ({ userDetail }) => {
           <p className="font-semibold">{userDetail.name}</p>
           <p className="font-semibold">{userDetail.email}</p>
         </DropdownItem>
-        <DropdownItem onClick={() => navigate(`/dashboard`)} textValue='dashboard' key="dashboard">Dashboard</DropdownItem>
+        <DropdownItem onClick={() => navigate(`/dashboard/profil/${userDetail._id}`)} textValue='dashboard' key="dashboard">Dashboard</DropdownItem>
         <DropdownItem onClick={handleLogout} textValue='logout' key="logout" color="danger">
           Keluar
         </DropdownItem>

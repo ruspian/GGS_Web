@@ -139,8 +139,8 @@ const AuthComponent = ({ isOpen, onOpenChange }) => {
         // hapus errors dan submit
         setErrors({});
 
-        // redirect ke halaman login
-        navigate("/masuk");
+        // redirect ke login
+        setSelected("masuk");
       }
 
     } catch (error) {

@@ -21,6 +21,10 @@ const getAPI = {
     url: "/api/user/logout",
     method: "GET",
   },
+  uploadFile: {
+    url: "/api/file/upload-file",
+    method: "POST",
+  },
 };
 
 export default getAPI;

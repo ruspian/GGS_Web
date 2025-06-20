@@ -10,6 +10,17 @@ const initialValue = {
   last_login_date: "",
   status: "",
   role: "",
+  aboutme: "",
+  social_media: {
+    facebook: "",
+    instagram: "",
+    twitter: "",
+    linkedin: "",
+    github: "",
+    youtube: "",
+    tiktok: "",
+    whatsapp: "",
+  },
 };
 
 // buat user Slice
@@ -27,6 +38,8 @@ const userSlice = createSlice({
       state.last_login_date = action.payload.last_login_date;
       state.status = action.payload.status;
       state.role = action.payload.role;
+      state.aboutme = action.payload.aboutme;
+      state.social_media = action.payload.social_media;
     },
     logoutUser: (state) => {
       state._id = "";
@@ -38,6 +51,17 @@ const userSlice = createSlice({
       state.last_login_date = "";
       state.status = "";
       state.role = "";
+      state.aboutme = "";
+      state.social_media = {
+        facebook: "",
+        instagram: "",
+        twitter: "",
+        linkedin: "",
+        github: "",
+        youtube: "",
+        tiktok: "",
+        whatsapp: "",
+      };
     },
   },
 });

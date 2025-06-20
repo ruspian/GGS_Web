@@ -1,10 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import RegisterPage from "../pages/RegisterPage";
-import MasukPage from "../pages/MasukPage";
 import UserDashboardLayout from "../layouts/UserDashboardLayout";
 import ProfilUserComponent from "../components/ProfilUserComponent";
 import EditUserComponent from "../components/EditUserComponent";
+import BerandaPage from "../pages/BerandaPage";
 
 const router = createBrowserRouter([
   {
@@ -12,17 +11,14 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
+        path: '/',
+        element: <BerandaPage />
+      },
+      {
         path: 'tentang',
         element: <h1>About</h1>
       },
-      {
-        path: 'daftar',
-        element: <RegisterPage />
-      },
-      {
-        path: 'masuk',
-        element: <MasukPage />
-      },
+
       {
         path: 'dashboard',
         element: <UserDashboardLayout />,

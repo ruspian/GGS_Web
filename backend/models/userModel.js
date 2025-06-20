@@ -25,6 +25,44 @@ const userShema = new mongoose.Schema(
       type: Number,
       default: null,
     },
+    aboutme: {
+      type: String,
+      default: null,
+    },
+    social_media: {
+      facebook: {
+        type: String,
+        default: null,
+      },
+      instagram: {
+        type: String,
+        default: null,
+      },
+      twitter: {
+        type: String,
+        default: null,
+      },
+      linkedin: {
+        type: String,
+        default: null,
+      },
+      github: {
+        type: String,
+        default: null,
+      },
+      youtube: {
+        type: String,
+        default: null,
+      },
+      tiktok: {
+        type: String,
+        default: null,
+      },
+      whatsapp: {
+        type: String,
+        default: null,
+      },
+    },
     refresh_token: {
       type: String,
       default: "",

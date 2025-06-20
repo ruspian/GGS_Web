@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import userRouter from "./routes/userRoute.js";
 import databaseConnect from "./config/databaseConnect.js";
+import uploadFileRouter from "./routes/uploadFileRoute.js";
 
 // inisialisasi dotenv
 dotenv.config();
@@ -31,6 +32,7 @@ app.use(
 
 // routes
 app.use("/api/user", userRouter);
+app.use("/api/file", uploadFileRouter);
 
 // jalankan servet
 databaseConnect().then(() => {
