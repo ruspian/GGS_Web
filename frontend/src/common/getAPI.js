@@ -25,6 +25,14 @@ const getAPI = {
     url: "/api/file/upload-file",
     method: "POST",
   },
+  uploadAvatarUpdate: {
+    url: "/api/user/upload-avatar",
+    method: "PUT",
+  },
+  updateUserDetail: {
+    url: "/api/user/update-user-detail",
+    method: "POST",
+  },
 };
 
 export default getAPI;

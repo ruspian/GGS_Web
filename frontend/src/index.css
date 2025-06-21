@@ -1,3 +1,6 @@
+/* Google Font */
+@import url("https://fonts.googleapis.com/css2?family=Faculty+Glyphic&family=Lavishly+Yours&family=Lexend:wght@100..900&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Volkhov:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

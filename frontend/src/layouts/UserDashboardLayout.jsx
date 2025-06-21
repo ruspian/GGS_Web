@@ -6,7 +6,6 @@ import { Outlet, useNavigate } from 'react-router-dom';
 
 const UserDashboardLayout = () => {
   const userDetail = useSelector((state) => state.user);
-  console.log("userDetail lauout", userDetail);
 
   const navigate = useNavigate();
 

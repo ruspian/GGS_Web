@@ -4,9 +4,12 @@ import { FaFacebook, FaInstagram, FaTwitter, FaLinkedinIn, FaGithub, FaYoutube, 
 
 const ProfilUserComponent = () => {
   const userDetail = useSelector((state) => state.user);
+  console.log("user detail from profil user component", userDetail);
 
-  // ubah sosial media jadi array
-  const socialMediaArray = Object.entries(userDetail.social_media);
+
+  // ubah object social media menjadi array
+  const socialMediaArray = userDetail.social_media ? Object.entries(userDetail.social_media) : [];
+
 
   // inisialisasi icon sesuai dengan social media sesuai data array
   const socialMediaIcon = {
@@ -19,6 +22,7 @@ const ProfilUserComponent = () => {
     tiktok: { icon: FaTiktok, accountName: null },
     whatsapp: { icon: FaWhatsapp, accountName: null },
   };
+
 
   return (
     <>
@@ -63,12 +67,7 @@ const ProfilUserComponent = () => {
                     <TableRow key="mobile">
                       <TableCell className='font-bold'>No. Hp</TableCell>
                       <TableCell className='font-bold'>:</TableCell>
-                      <TableCell className='font-semibold'>{userDetail.mobule || "-"}</TableCell>
-                    </TableRow>
-                    <TableRow key="address">
-                      <TableCell className='font-bold'>Alamat</TableCell>
-                      <TableCell className='font-bold'>:</TableCell>
-                      <TableCell className='font-semibold'>{userDetail.address || "-"}</TableCell>
+                      <TableCell className='font-semibold'>{userDetail.mobile || "-"}</TableCell>
                     </TableRow>
                     <TableRow key="about">
                       <TableCell className='font-bold grid'>Tentang saya</TableCell>

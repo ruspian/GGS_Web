@@ -11,21 +11,19 @@ cloudinary.config({
 
 // fungsi upload gambar ke cloudinary
 const uploadImageToCloudinary = async (file) => {
-  // cek apakah file ada
+  // cek apakah file ada dan memiliki buffer (dari Multer memoryStorage)
   if (!file || !file.buffer) {
-    throw new error("File Kosong!");
+    throw new Error("File atau buffer file kosong!");
   }
 
-  // tentukan resource type dari file ==> image/vidio/audio
+  // tentukan resource type dari file ==> image/video/audio/raw
   let resourceType = "auto";
-  if (file.mimetype.startWith("image/")) {
+  if (file.mimetype.startsWith("image/")) {
     resourceType = "image";
-  } else if (file.mimetype.startWith("video/")) {
+  } else if (file.mimetype.startsWith("video/")) {
     resourceType = "video";
-  } else if (file.mimetype.startWith("audio/")) {
+  } else if (file.mimetype.startsWith("audio/")) {
     resourceType = "audio";
-  } else if (file.mimetype.startWith("file/")) {
-    resourceType = "file";
   }
 
   // upload file ke cloudinary
@@ -33,13 +31,13 @@ const uploadImageToCloudinary = async (file) => {
     cloudinary.uploader
       .upload_stream(
         {
-          folder: "ggs",
-          recource_type: resourceType,
+          folder: "ggs", // Pastikan folder ini ada di Cloudinary
+          resource_type: resourceType,
         },
         (error, result) => {
           // jika error
           if (error) {
-            console.log("gagal upload ke cloudinary :", error);
+            console.error("Gagal upload ke cloudinary:", error);
             return reject(error);
           }
 

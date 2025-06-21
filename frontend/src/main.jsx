@@ -12,7 +12,7 @@ import './index.css'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <HeroUIProvider>
-      <ToastProvider placement='top-center' toastOffset={60} />
+      <ToastProvider placement='top-center' toastOffset={60} name='toast' />
       <Provider store={store}>
         <RouterProvider router={router} />
       </Provider>

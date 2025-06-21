@@ -2,6 +2,7 @@ import UserModel from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import generateAccessToken from "../utils/generateAccessToken.js";
 import generateRefreshToken from "../utils/generateRefreshToken.js";
+import uploadImageToCloudinary from "../utils/uploadImageToCloudinary.js";
 
 // fungsi register user controller
 export const registerUserController = async (req, res) => {
@@ -264,6 +265,121 @@ export const logoutUserController = async (req, res) => {
       message: "Logout berhasil!",
       error: false,
       success: true,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.massage || "Kesalahan Pada Server, Coba Lagi Nanti!",
+      error: true,
+      success: false,
+    });
+  }
+};
+
+// fungsi upload poto profil user
+export const uploadAvatarController = async (req, res) => {
+  try {
+    const userId = req.userId; // ambil dari authMiddleware
+    const file = req.file; // ambil file dari multer middleware
+
+    // upload gambar ke cloudinary
+    const uploadAvatar = await uploadImageToCloudinary(file);
+
+    // update avatar di database
+    const userUpated = await UserModel.findByIdAndUpdate(userId, {
+      avatar: uploadAvatar.secure_url,
+    });
+
+    // cek apakah avatar suda di update
+    if (!userUpated) {
+      return res.status(400).json({
+        message: "Gagal mengupdate avatar!",
+        error: true,
+        success: false,
+      });
+    }
+
+    console.log("uploadAvatar URL", uploadAvatar.secure_url);
+
+    // kembalikan response
+    return res.status(200).json({
+      message: "Avatar berhasil diupdate!",
+      error: false,
+      success: true,
+      data: {
+        _id: userId,
+        avatar: uploadAvatar.secure_url,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.massage || "Kesalahan Pada Server, Coba Lagi Nanti!",
+      error: true,
+      success: false,
+    });
+  }
+};
+
+// fungsi update/edit user detail controller
+export const updateUserDetailController = async (req, res) => {
+  try {
+    const userId = req.userId; // ambil dari authMiddleware
+    const {
+      name,
+      email,
+      password,
+      mobile,
+      aboutme,
+      facebook,
+      instagram,
+      twitter,
+      linkedin,
+      github,
+      youtube,
+      tiktok,
+      whatsapp,
+    } = req.body;
+
+    // hash pasword baru
+    let hashNewPassword = "";
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      hashNewPassword = await bcrypt.hash(password, salt);
+    }
+
+    // update user di database
+    const userUpdated = await UserModel.findByIdAndUpdate(userId, {
+      name: name,
+      email: email,
+      password: hashNewPassword,
+      mobile: mobile,
+      aboutme: aboutme,
+      social_media: {
+        facebook: facebook,
+        instagram: instagram,
+        twitter: twitter,
+        linkedin: linkedin,
+        github: github,
+        youtube: youtube,
+        tiktok: tiktok,
+        whatsapp: whatsapp,
+      },
+    });
+
+    // cek apakah user suda di update
+    if (!userUpdated) {
+      return res.status(400).json({
+        message: "Gagal mengupdate user!",
+        error: true,
+        success: false,
+      });
+    }
+
+    // kembalikan response
+    return res.status(200).json({
+      message: "User berhasil diupdate!",
+      error: false,
+      success: true,
+      data: userUpdated,
     });
   } catch (error) {
     return res.status(500).json({

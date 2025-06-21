@@ -29,42 +29,38 @@ const userSlice = createSlice({
   initialState: initialValue,
   reducers: {
     setUserDetails: (state, action) => {
-      state._id = action.payload._id;
-      state.name = action.payload.name;
-      state.email = action.payload.email;
-      state.avatar = action.payload.avatar;
-      state.mobile = action.payload.mobile;
-      state.verify_email = action.payload.verify_email;
-      state.last_login_date = action.payload.last_login_date;
-      state.status = action.payload.status;
-      state.role = action.payload.role;
-      state.aboutme = action.payload.aboutme;
-      state.social_media = action.payload.social_media;
+      return { ...state, ...action.payload };
     },
-    logoutUser: (state) => {
-      state._id = "";
-      state.name = "";
-      state.email = "";
-      state.avatar = "";
-      state.mobile = "";
-      state.verify_email = "";
-      state.last_login_date = "";
-      state.status = "";
-      state.role = "";
-      state.aboutme = "";
-      state.social_media = {
-        facebook: "",
-        instagram: "",
-        twitter: "",
-        linkedin: "",
-        github: "",
-        youtube: "",
-        tiktok: "",
-        whatsapp: "",
-      };
+    logoutUser: () => {
+      return initialValue;
+    },
+    updatedAvatarUser: (state, action) => {
+      if (state) {
+        state.avatar = action.payload;
+      }
+    },
+    updatedDetailUser: (state, action) => {
+      if (state) {
+        state.name = action.payload.name || state.name;
+        state.email = action.payload.email || state.email;
+        state.mobile = action.payload.mobile || state.mobile;
+        state.aboutme = action.payload.aboutme || state.aboutme;
+
+        if (action.payload.social_media) {
+          state.social_media = {
+            ...state.social_media, // Pertahankan yang sudah ada
+            ...action.payload.social_media, // Timpa dengan yang baru dari payload
+          };
+        }
+      }
     },
   },
 });
 
-export const { setUserDetails, logoutUser } = userSlice.actions;
+export const {
+  setUserDetails,
+  logoutUser,
+  updatedAvatarUser,
+  updatedDetailUser,
+} = userSlice.actions;
 export default userSlice.reducer;
