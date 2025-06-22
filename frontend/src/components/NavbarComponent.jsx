@@ -18,8 +18,8 @@ import FetchFromAxios from "../utils/AxiosUtil";
 import getAPI from "../common/getAPI";
 import { setUserDetails } from "../store/userSliceRedux";
 import UserMenuComponent from "./UserMenuComponent";
-import { LoginCurve } from 'iconsax-reactjs';
 import AuthComponent from "./AuthComponent";
+import { IoMdLogIn } from "react-icons/io";
 
 const NavbarComponent = () => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -127,14 +127,13 @@ const NavbarComponent = () => {
           <NavbarContent justify="end">
             <NavbarItem>
               <Button
-                // onClick={() => navigate("/login")}
                 radius="sm"
                 color="success"
                 variant="bordered"
                 onPress={onOpen}
+                endContent={<IoMdLogIn size={20} />}
               >
                 Masuk
-                <LoginCurve size="20" color="#37d67a" variant="Broken" />
               </Button>
               <AuthComponent isOpen={isOpen} onOpenChange={onOpenChange} />
             </NavbarItem>
