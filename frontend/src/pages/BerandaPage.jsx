@@ -4,6 +4,7 @@ import { Button, useDisclosure } from "@heroui/react";
 import { FiArrowRightCircle } from "react-icons/fi";
 import AuthComponent from "../components/AuthComponent";
 import PatnershipComponent from "../components/PatnershipComponent";
+import AboutComponent from "../components/AboutComponent";
 
 const BerandaPage = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -131,6 +132,11 @@ const BerandaPage = () => {
         >
           <PatnershipComponent />
         </motion.div>
+      </div>
+
+      {/* about */}
+      <div className="pt-8">
+        <AboutComponent />
       </div>
     </main>
   );
