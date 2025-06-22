@@ -5,6 +5,7 @@ import { FiArrowRightCircle } from "react-icons/fi";
 import AuthComponent from "../components/AuthComponent";
 import PatnershipComponent from "../components/PatnershipComponent";
 import AboutComponent from "../components/AboutComponent";
+import AnggotaComponent from "../components/AnggotaComponent";
 
 const BerandaPage = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -137,6 +138,11 @@ const BerandaPage = () => {
       {/* about */}
       <div className="pt-8">
         <AboutComponent />
+      </div>
+
+      {/* anggota */}
+      <div className="pt-8">
+        <AnggotaComponent />
       </div>
     </main>
   );
