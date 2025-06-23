@@ -1,6 +1,7 @@
 import { Button, Card, CardBody, CardFooter, CardHeader, Image } from '@heroui/react';
 import React from 'react';
 import { FaFacebook, FaWhatsapp, FaInstagram, FaTwitter, FaTiktok } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const AnggotaComponent = () => {
@@ -167,7 +168,9 @@ const AnggotaComponent = () => {
 
         <div className='flex justify-center pb-8'>
           <Button variant='bordered' color='success'>
-            Lihat Semua Anggota
+            <Link to={'/anggota'}>
+              Lihat Semua Anggota
+            </Link>
           </Button>
         </div>
       </div>

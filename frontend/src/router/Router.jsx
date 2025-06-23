@@ -5,6 +5,10 @@ import ProfilUserComponent from "../components/ProfilUserComponent";
 import EditUserComponent from "../components/EditUserComponent";
 import BerandaPage from "../pages/BerandaPage";
 import SemuaKegiatanPage from "../pages/SemuaKegiatanPage";
+import DisplayKegiatanPage from "../pages/DisplayKegiatanPage";
+import AnggotaPage from "../pages/AnggotaPage";
+
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -17,6 +21,14 @@ const router = createBrowserRouter([
       {
         path: 'kegiatan',
         element: <SemuaKegiatanPage />
+      },
+      {
+        path: 'kegiatan/:id',
+        element: <DisplayKegiatanPage />
+      },
+      {
+        path: 'anggota',
+        element: <AnggotaPage />
       },
 
       {

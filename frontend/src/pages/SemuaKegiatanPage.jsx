@@ -171,7 +171,7 @@ const SemuaKegiatanComponent = () => {
                     <small className="text-default-500 line-clamp-2">{activity.description}</small>
                   </CardFooter>
                   <Link
-                    to='#'
+                    to={`/kegiatan/${activity.id}`}
                     className='pt-2 px-4 pb-4 text-md text-emerald-600 hover:text-emerald-800'
                   >
                     <small>Lihat Selengkapnya</small>

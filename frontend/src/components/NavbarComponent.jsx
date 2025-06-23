@@ -40,7 +40,6 @@ const NavbarComponent = () => {
     { name: 'Beranda', path: '/' },
     { name: 'Tentang', path: '/tentang' },
     { name: 'Kegiatan', path: '/kegiatan' },
-    { name: 'Galery', path: '/galery' },
     { name: 'Kontak', path: '/kontak' },
   ];
 

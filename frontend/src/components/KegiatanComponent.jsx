@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, CardHeader, Image } from '@heroui/react';
+import { Button, Card, CardBody, CardFooter, Image } from '@heroui/react';
 import { Link } from 'react-router-dom';
 
 
@@ -87,9 +87,10 @@ const KegiatanComponent = () => {
           <Button
             variant='bordered'
             color='success'
-
           >
-            Lihat Lainnya
+            <Link to='/kegiatan'>
+              Lihat Lainnya
+            </Link>
           </Button>
         </div>
 
