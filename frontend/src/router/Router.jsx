@@ -4,7 +4,7 @@ import UserDashboardLayout from "../layouts/UserDashboardLayout";
 import ProfilUserComponent from "../components/ProfilUserComponent";
 import EditUserComponent from "../components/EditUserComponent";
 import BerandaPage from "../pages/BerandaPage";
-
+import SemuaKegiatanPage from "../pages/SemuaKegiatanPage";
 const router = createBrowserRouter([
   {
     path: '/',
@@ -15,8 +15,8 @@ const router = createBrowserRouter([
         element: <BerandaPage />
       },
       {
-        path: 'tentang',
-        element: <h1>About</h1>
+        path: 'kegiatan',
+        element: <SemuaKegiatanPage />
       },
 
       {

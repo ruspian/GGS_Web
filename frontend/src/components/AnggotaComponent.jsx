@@ -65,7 +65,7 @@ const AnggotaComponent = () => {
                 </div>
                 <Button variant='bordered' size='sm' color='success'>Profil</Button>
               </CardHeader>
-              <CardBody className="w-full  h-64 overflow-hidden my-2">
+              <CardBody className="w-full h-64 overflow-hidden my-2">
                 <Image
                   src="https://plus.unsplash.com/premium_photo-1669703777437-27602d656c27?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D"
                   alt="Foto Otong Surotong"
