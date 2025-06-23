@@ -5,13 +5,13 @@ import { Image } from '@heroui/react'
 const AboutComponent = () => {
   return (
     <div className='h-auto'>
-      <div className='flex flex-col md:flex-row  gap-4 px-6 md:mx-20 my-8  py-6 bg-white border rounded-sm shadow-xl'>
+      <div className='flex flex-col md:flex-row gap-4 px-6 md:mx-20 my-8 py-6 border rounded-sm shadow-xl'>
 
         <div>
           <Image
             alt="HeroUI hero Image"
             src={aboutImage}
-            className="w-full h-full object-cover rounded-md"
+            className="w-full h-full object-cover rounded-md animate-float1"
           />
         </div>
 

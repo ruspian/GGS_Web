@@ -8,7 +8,7 @@ import unknownLogo from '../assets/unknownLogo.png'
 
 const PatnershipComponent = () => {
   return (
-    <div className=' h-32 md:h-20 w-full flex items-center justify-center'>
+    <div className=' h-32 md:h-20 w-full relative flex items-center justify-center'>
       <div className='bg-white md:w-[80%] md:p-2 p-4 w-auto md:absolute md:-translate-y-4 rounded-md shadow-md'>
         {/* judul */}
         <p className='text-lg font-bold text-center text-emerald-700'>Patnership</p>
