@@ -14,6 +14,18 @@ const aboutSchema = new mongoose.Schema(
       type: String,
       required: [true, "Mohon masukkan misi!"],
     },
+    aboutLogo: {
+      type: String,
+      default: null,
+    },
+    tanggal: {
+      type: String,
+      default: null,
+    },
+    name: {
+      type: String,
+      required: [true, "Mohon masukkan nama!"],
+    },
   },
   {
     timestamps: true,

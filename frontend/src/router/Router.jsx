@@ -7,6 +7,13 @@ import BerandaPage from "../pages/BerandaPage";
 import SemuaKegiatanPage from "../pages/SemuaKegiatanPage";
 import DisplayKegiatanPage from "../pages/DisplayKegiatanPage";
 import AnggotaPage from "../pages/AnggotaPage";
+import AdminPage from "../pages/AdminPage";
+import AdminPermissionLayout from "../layouts/AdminPermissionLayout";
+import AdminDashboardComponent from "../components/AdminDashboardComponent";
+import ProfilAdminComponent from "../components/ProfilAdminComponent";
+import KegiatanAdminComponent from "../components/KegiatanAdminComponent";
+import AnggotaAdminComponent from "../components/AnggotaAdminComponent";
+import GaleriAdminComponent from "../components/GaleriAdminComponent";
 
 
 const router = createBrowserRouter([
@@ -43,6 +50,32 @@ const router = createBrowserRouter([
             path: 'edit/:id',
             element: <EditUserComponent />
           }
+        ]
+      },
+      {
+        path: 'admin',
+        element: <AdminPage />,
+        children: [
+          {
+            path: 'dashboard',
+            element: <AdminDashboardComponent />
+          },
+          {
+            path: 'profil',
+            element: <ProfilAdminComponent />
+          },
+          {
+            path: 'kegiatan',
+            element: <KegiatanAdminComponent />
+          },
+          {
+            path: 'anggota',
+            element: <AnggotaAdminComponent />
+          },
+          {
+            path: 'galeri',
+            element: <GaleriAdminComponent />
+          },
         ]
       }
     ]
