@@ -1,6 +1,16 @@
+import UserModel from "../models/userModel.js";
+
 export const adminMiddleware = async (req, res, next) => {
   try {
     const userId = req.userId; // ambil dari authMiddleware
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Akses ditolak: User ID tidak ditemukan!.",
+        error: true,
+        success: false,
+      });
+    }
 
     // cari user di database
     const user = await UserModel.findById(userId);
@@ -27,7 +37,7 @@ export const adminMiddleware = async (req, res, next) => {
     next();
   } catch (error) {
     return res.status(500).json({
-      message: error.massage || "Kesalahan Pada Server, Coba Lagi Nanti!",
+      message: error.message || "Kesalahan Pada Server, Coba Lagi Nanti!",
       error: true,
       success: false,
     });

@@ -5,51 +5,59 @@ dotenv.config();
 
 const authMiddleware = async (req, res, next) => {
   try {
-    // ambil token dari cookie atau header
+    // Ambil token dari cookie atau header
     const token =
-      req.cookies?.accessToken ||
-      (req.headers?.authorization?.startsWith("Bearer ")
+      req.cookies?.accessToken || // Cek dari cookie
+      (req.headers?.authorization?.startsWith("Bearer ") // Cek dari Authorization header
         ? req.headers.authorization.split(" ")[1]
         : null);
 
     // Cek token dengan kondisi lebih ketat
     if (!token || typeof token !== "string") {
       return res.status(401).json({
-        message: "Akses ditolak: Token tidak ditemukan",
+        message:
+          "Akses ditolak: Token tidak ditemukan atau format token salah.",
         error: true,
         success: false,
       });
     }
 
-    // cek apakah token valid/sesuai atau tidak
-    const verifyToken = jwt.verify(token, process.env.JWT_SECRET_ACCESS_TOKEN);
+    // Pastikan JWT Secret terdefinisi
+    const jwtSecret = process.env.JWT_SECRET_ACCESS_TOKEN;
+    if (!jwtSecret) {
+      return res.status(500).json({
+        message: "Kesalahan server: Kunci rahasia JWT tidak dikonfigurasi.",
+        error: true,
+        success: false,
+      });
+    }
 
-    // cek apakah verifyToken.id ada
+    // Verifikasi token
+    const verifyToken = jwt.verify(token, jwtSecret);
+
+    //  Cek apakah verifyToken.id ada di payload token
     if (!verifyToken.id) {
       return res.status(401).json({
-        message: "Akses ditolak: Token tidak valid",
+        message: "Akses ditolak: ID pengguna tidak ditemukan!.",
         error: true,
         success: false,
       });
     }
 
-    // set user di request
+    //  Set user di request
     req.userId = verifyToken.id;
 
-    // lanjutkan ke controller
+    // Lanjutkan ke controller
     next();
   } catch (error) {
-    // inisialissai pesan
-    let message = "Silakan login kembali";
+    let message = "Silakan login kembali.";
 
-    // cek apakah error token expired
     if (error instanceof jwt.TokenExpiredError) {
-      message = "Sesi telah berakhir, silakan login kembali";
+      message = "Sesi telah berakhir, silakan login kembali.";
     } else if (error instanceof jwt.JsonWebTokenError) {
-      message = "Token tidak valid";
+      message = "Token tidak valid.";
     }
 
-    // kirim respon
     return res.status(401).json({
       message,
       error: true,

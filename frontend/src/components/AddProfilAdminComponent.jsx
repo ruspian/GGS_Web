@@ -1,55 +1,32 @@
 import { DatePicker, Modal, Form, Input, Button } from 'antd';
 import { useForm } from 'antd/es/form/Form';
-import React, { useEffect } from 'react';
 import getAPI from '../common/getAPI';
 import FetchFromAxios from '../utils/AxiosUtil';
 import { addToast } from '@heroui/toast';
 import dayjs from 'dayjs';
-import { useDispatch } from 'react-redux';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { editAbout } from '../store/aboutSliceRedux'; // Pastikan action editAbout sudah benar
 
-const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, handleCancelEdit, initialValues, onEditSuccess }) => {
+const AddProfilAdminComponent = ({ isModalOpenAdd, setIsModalOpenAdd, handleCancelAdd, onAddSuccess }) => {
   const { TextArea } = Input;
 
-  const dispatch = useDispatch();
 
   // Inisialisasi hook form dari Ant Design
   const [form] = useForm();
 
-  // Gunakan useEffect untuk mengisi form ketika initialValues atau isModalOpenEdit berubah
-  useEffect(() => {
-    if (isModalOpenEdit && initialValues) {
-      // Pastikan tanggal diformat sebagai objek dayjs
-      const formattedInitialValues = {
-        ...initialValues,
-        tanggal: initialValues.tanggal ? dayjs(initialValues.tanggal) : null,
-      };
-
-      // Mengisi form dengan nilai-nilai awal
-      form.setFieldsValue(formattedInitialValues);
-    } else if (!isModalOpenEdit) {
-      // Reset form ketika modal ditutup
-      form.resetFields();
-    }
-  }, [isModalOpenEdit, initialValues, form]);
-
   // Fungsi handle klik ok
-  const handleOkEdit = async () => {
+  const handleOkAdd = async () => {
     try {
-      // validasi semua field form dan mengambil nilainya
       const values = await form.validateFields();
 
-      // konversi objek dayjs dari DatePicker menjadi ISO string untuk backend
+      // Atur format tanggal
       const formattedTanggal = values.tanggal && dayjs.isDayjs(values.tanggal)
         ? values.tanggal.toISOString()
         : null;
 
-      // config data UPDATE
+      // Konfigurasi API untuk membuat profil baru
       let apiConfig = {
-        ...getAPI.editAbout,
+        ...getAPI.createAbout,
         data: {
-          _id: initialValues._id,
           name: values.name,
           visi: values.visi,
           misi: values.misi,
@@ -58,8 +35,10 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
         }
       };
 
-      // Memanggil API untuk mengirim data
+      // Panggil API untuk mengirim data
       const response = await FetchFromAxios(apiConfig);
+
+      console.log("AddProfilAdminComponent: response =", response);
 
       // Jika operasi di backend gagal
       if (!response.data.success) {
@@ -67,24 +46,25 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
         return; // Hentikan eksekusi jika gagal
       }
 
-
       // Jika operasi berhasil
       addToast({ title: response.data.message, variant: 'success' });
 
-      // Pastikan data yang didispatch ke Redux sudah serializable
-      const serializableResponseData = { ...response.data.data };
-      if (serializableResponseData.tanggal && dayjs.isDayjs(serializableResponseData.tanggal)) {
-        serializableResponseData.tanggal = serializableResponseData.tanggal.toISOString();
-      }
-      dispatch(editAbout(serializableResponseData)); // Dispatch data yang sudah serializable
-
-      setIsModalOpenEdit(false);
+      // Tutup modal
+      setIsModalOpenAdd(false);
+      // Kosongkan form
       form.resetFields();
 
-      // Pastikan data yang diteruskan ke onEditSuccess juga serializable
-      if (onEditSuccess) {
-        onEditSuccess(serializableResponseData);
+      // Panggil callback onAddSuccess untuk memberitahu komponen induk
+      // bahwa operasi berhasil, dan teruskan data yang baru dibuat.
+      // Pastikan data yang diteruskan ke onAddSuccess sudah serializable 
+      if (onAddSuccess) {
+        const serializableResponseData = { ...response.data.data };
+        if (serializableResponseData.tanggal && dayjs.isDayjs(serializableResponseData.tanggal)) {
+          serializableResponseData.tanggal = serializableResponseData.tanggal.toISOString();
+        }
+        onAddSuccess(serializableResponseData);
       }
+
 
     } catch (errorInfo) {
       // Penanganan error
@@ -108,10 +88,11 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
     }
   };
 
+
   return (
     <>
       <Modal
-        title='Edit Profil'
+        title='Buat Profil'
         styles={{
           mask: {
             backdropFilter: 'blur(10px)'
@@ -121,16 +102,16 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
           },
         }}
         closable={{ 'aria-label': 'Tombol Tutup Kustom' }}
-        open={isModalOpenEdit}
-        onOk={handleOkEdit}
-        onCancel={handleCancelEdit}
+        open={isModalOpenAdd}
+        onOk={handleOkAdd}
+        onCancel={handleCancelAdd}
       >
         <Form
           form={form}
           layout="vertical"
           autoComplete="off"
         >
-          {/* Field Nama Organisasi */}
+          {/* Nama Organisasi */}
           <Form.Item
             name="name"
             label="Nama Organisasi"
@@ -139,7 +120,7 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
             <Input placeholder='Nama Organisasi' />
           </Form.Item>
 
-          {/* Field Tanggal Berdiri */}
+          {/* tanggal */}
           <Form.Item
             name="tanggal"
             label="Tanggal Berdiri"
@@ -148,7 +129,7 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
             <DatePicker className='w-full' />
           </Form.Item>
 
-          {/* Field Visi */}
+          {/* Visi */}
           <Form.Item
             name="visi"
             label="Visi"
@@ -157,17 +138,16 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
             <TextArea placeholder="Visi" autoSize={{ minRows: 3, maxRows: 6 }} />
           </Form.Item>
 
-          {/* Dynamic Field: Misi */}
+          {/* Misi  */}
           <Form.List
             name="misi"
             rules={[
               {
                 validator: async (_, misiItems) => {
-                  // Validasi untuk memastikan setidaknya ada satu misi
                   if (!misiItems || misiItems.length === 0) {
                     return Promise.reject(new Error('Mohon masukkan setidaknya satu misi!'));
                   }
-                  // Pastikan tidak ada field misi yang kosong
+                  // Validasi setiap item misi agar tidak kosong
                   if (misiItems.some(item => !item || String(item).trim() === '')) {
                     return Promise.reject(new Error('Misi tidak boleh kosong!'));
                   }
@@ -177,6 +157,7 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
           >
             {(fields, { add, remove }) => (
               <>
+                {/* Judul untuk bagian Misi */}
                 <div className="text-base font-medium text-gray-800 mb-2">Misi</div>
                 {fields.map(({ key, name, ...restField }, index) => (
                   <div key={key} className="flex items-center gap-2 mb-2">
@@ -192,6 +173,7 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
                         className="w-full"
                       />
                     </Form.Item>
+                    {/* Tombol Hapus Misi */}
                     {fields.length > 1 ? (
                       <MinusCircleOutlined
                         className="text-gray-500 hover:text-red-500 cursor-pointer text-lg"
@@ -200,6 +182,7 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
                     ) : null}
                   </div>
                 ))}
+                {/* Tombol Tambah Misi */}
                 <Form.Item>
                   <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
                     Tambah Misi
@@ -209,7 +192,7 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
             )}
           </Form.List>
 
-          {/* Field Tentang */}
+          {/* Tentang  */}
           <Form.Item
             name="about"
             label="Tentang"
@@ -223,4 +206,4 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
   );
 }
 
-export default EditProfilAdminModalComponent;
+export default AddProfilAdminComponent;

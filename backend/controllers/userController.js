@@ -298,8 +298,6 @@ export const uploadAvatarController = async (req, res) => {
       });
     }
 
-    console.log("uploadAvatar URL", uploadAvatar.secure_url);
-
     // kembalikan response
     return res.status(200).json({
       message: "Avatar berhasil diupdate!",

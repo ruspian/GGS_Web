@@ -33,6 +33,18 @@ const getAPI = {
     url: "/api/user/update-user-detail",
     method: "POST",
   },
+  createAbout: {
+    url: "/api/about/create-about",
+    method: "POST",
+  },
+  getAbout: {
+    url: "/api/about/get-about",
+    method: "GET",
+  },
+  editAbout: {
+    url: "/api/about/edit-about",
+    method: "PUT",
+  },
 };
 
 export default getAPI;

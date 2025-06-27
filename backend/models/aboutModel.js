@@ -11,15 +11,15 @@ const aboutSchema = new mongoose.Schema(
       required: [true, "Mohon masukkan visi!"],
     },
     misi: {
-      type: String,
+      type: [String],
       required: [true, "Mohon masukkan misi!"],
     },
-    aboutLogo: {
+    logo: {
       type: String,
       default: null,
     },
     tanggal: {
-      type: String,
+      type: Date,
       default: null,
     },
     name: {
