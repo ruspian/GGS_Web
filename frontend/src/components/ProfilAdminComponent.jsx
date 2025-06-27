@@ -7,7 +7,7 @@ import { useForm } from 'antd/es/form/Form'; // Pastikan useForm diimpor dari si
 import { addToast } from '@heroui/toast';
 import FetchFromAxios from '../utils/AxiosUtil';
 import getAPI from '../common/getAPI';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setAbout } from '../store/aboutSliceRedux';
 import dayjs from 'dayjs';
 
@@ -24,9 +24,6 @@ const ProfilAdminComponent = () => {
   const [form] = useForm(); // Ini adalah instance form untuk EditProfilAdminModalComponent
 
   const dispatch = useDispatch();
-
-  const aboutRedux = useSelector((state) => state.about);
-  console.log("ProfilAdminComponent: aboutRedux =", aboutRedux);
 
 
   // Fungsi untuk mengambil data profil dari backend
@@ -81,7 +78,6 @@ const ProfilAdminComponent = () => {
     fetchAboutData();
   }, [dispatch]); // Ditambahkan dispatch ke dependencies
 
-  console.log("ProfilAdminComponent: profilData =", profilData);
 
   // Fungsi untuk menampilkan modal "Buat Profil"
   const showModalAdd = () => {

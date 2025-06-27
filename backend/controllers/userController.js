@@ -244,8 +244,6 @@ export const logoutUserController = async (req, res) => {
   try {
     const userId = req.userId; // ambil dari authMiddleware
 
-    console.log("userId", userId);
-
     // hapus cookie
     const cookieOptions = {
       httpOnly: true,

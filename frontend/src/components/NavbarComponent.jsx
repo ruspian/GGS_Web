@@ -33,7 +33,6 @@ const NavbarComponent = () => {
 
   // ambil data user dari redux
   const userDetail = useSelector((state) => state.user);
-  console.log("userDetail", userDetail);
 
 
   const menuItems = [
