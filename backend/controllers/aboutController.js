@@ -107,11 +107,11 @@ export const getAboutController = async (req, res) => {
   }
 };
 
-// Controller edit tentang
+// Controller untuk mengedit data Tentang
 export const editAboutController = async (req, res) => {
   try {
     const userId = req.userId; // Dari authMiddleware
-    const { _id, about, visi, misi, name, tanggal } = req.body;
+    const { _id, about, visi, misi, name, tanggal, logo } = req.body;
 
     // Validasi Authentikasi
     if (!userId) {
@@ -140,6 +140,7 @@ export const editAboutController = async (req, res) => {
         misi,
         name,
         tanggal,
+        logo,
       },
       {
         new: true, // mengembalikan dokumen yang sudah diupdate

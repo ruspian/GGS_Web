@@ -2,9 +2,9 @@ import uploadImageToCloudinary from "../utils/uploadImageToCloudinary.js";
 
 const uploadImageController = async (req, res) => {
   try {
-    const file = req.file; // ambil file dari multer
+    const file = req.file; // ambil dari middleware multer
 
-    // cek apakah file ada
+    // Check if file exists
     if (!file) {
       return res.status(400).json({
         message: "Mohon upload gambar!",
@@ -13,77 +13,60 @@ const uploadImageController = async (req, res) => {
       });
     }
 
-    // tentukan mimetype dari file
-    const allowedMimeType = {
-      "image/png": "png", // image
+    // inisialisasi tipe file yang diizinkan
+    const allowedMimeTypes = {
+      "image/png": "png",
       "image/jpeg": "jpg",
       "image/jpg": "jpg",
       "image/gif": "gif",
       "image/webp": "webp",
-      "audio/mpeg": "mp3", // audio
-      "audio/wav": "wav",
-      "audio/ogg": "ogg",
-      "video/mp4": "mp4", // video
-      "video/ogg": "ogg",
-      "video/webm": "webm",
-      "file/pdf": "pdf", // file
-      "file/docx": "docx",
-      "file/doc": "doc",
-      "file/xls": "xls",
-      "file/xlsx": "xlsx",
-      "file/ppt": "ppt",
-      "file/pptx": "pptx",
-      "file/zip": "zip",
-      "file/txt": "txt",
-      "file/rtf": "rtf",
-      "file/csv": "csv",
     };
 
-    // cek apakah mimetype sesuai
-    if (!allowedMimeType.includes(file.mimetype)) {
+    // cek apakah mimetype file yang diupload diizinkan
+    if (!Object.keys(allowedMimeTypes).includes(file.mimetype)) {
       return res.status(400).json({
-        message: `Tipe file ${file.mimetype} tidak diizinkan!`,
+        message: `Tipe file ${file.mimetype} tidak diizinkan! Hanya gambar (png, jpg, jpeg, gif, webp) yang didukung.`,
         error: true,
         success: false,
       });
     }
 
-    // tentukan ukuran file yang di upload
-    const allowedMaxFileSize = 20 * 1024 * 1024; // 20MB
-    // jika ukuran file melebihi
+    // definisikan ukuran file maksimum yang diizinkan
+    const allowedMaxFileSize = 5 * 1024 * 1024; // 5MB example
     if (file.size > allowedMaxFileSize) {
       return res.status(400).json({
-        message: `Ukuran file tidak boleh melebihi 20MB!`,
+        message: `Ukuran file tidak boleh melebihi ${
+          allowedMaxFileSize / (1024 * 1024)
+        }MB!`,
         error: true,
         success: false,
       });
     }
 
-    // upload gambar ke cloudinary
+    // upload gambar ke Cloudinary
     const uploadToCloudinaryResult = await uploadImageToCloudinary(file);
 
-    //  penanganan hasil upload ke cloudinary
+    // cek apakah upload berhasil
     if (!uploadToCloudinaryResult || !uploadToCloudinaryResult.secure_url) {
       return res.status(500).json({
-        message: "Gagal upload gambar ke cloudinary!",
+        message: "Gagal upload gambar ke Cloudinary!",
         error: true,
         success: false,
       });
     }
 
-    // jika berhasil
+    // jika berhasil, kembalikan URL gambar
     return res.status(200).json({
       message: "File berhasil diupload!",
       error: false,
       success: true,
       data: {
-        // url gambar ==> kembalikan hanya url saja ke frontend
-        secure_url: uploadToCloudinaryResult.secure_url,
+        url: uploadToCloudinaryResult.secure_url,
       },
     });
   } catch (error) {
     return res.status(500).json({
-      message: error.massage || "Kesalahan Pada Server, Coba Lagi Nanti!",
+      message: error.message || "Kesalahan Pada Server, Coba Lagi Nanti!",
       error: true,
       success: false,
     });

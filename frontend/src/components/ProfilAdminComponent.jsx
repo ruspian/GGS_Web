@@ -46,6 +46,17 @@ const ProfilAdminComponent = () => {
           fetchedData = null; // Jika array kosong, set ke null
         }
 
+        // Menyiapkan fileList untuk menampilkan logo yang sudah ada
+        if (fetchedData && fetchedData.logo && typeof fetchedData.logo === 'string' && fetchedData.logo.trim() !== '') {
+          setFileList([{
+            uid: fetchedData._id || '-1',
+            name: fetchedData.name || 'logo_profil.png',
+            status: 'done',
+            url: fetchedData.logo,
+          }]);
+        } else {
+          setFileList([]); // Kosongkan jika tidak ada logo atau logo tidak valid
+        }
 
 
         setProfilData(fetchedData); // Simpan data profil ke state lokal 
@@ -113,8 +124,115 @@ const ProfilAdminComponent = () => {
     setIsModalOpenEdit(false);
   };
 
-  // Fungsi handle change gambar (untuk Upload Ant Design)
-  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+  // Fungsi customRequest untuk mengunggah file menggunakan Axios
+  const handleUploadLogo = async (options) => {
+    const { file, onSuccess, onError, onProgress } = options;
+
+    const formData = new FormData();
+    formData.append('image', file); // 'image' adalah nama field yang diharapkan oleh Multer 
+
+    try {
+      // Mengirim file ke endpoint upload terpisah Anda
+      const response = await FetchFromAxios({
+        ...getAPI.uploadFile,
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        onUploadProgress: (event) => { //  Untuk menampilkan progress upload
+          const percent = Math.floor((event.loaded / event.total) * 100);
+          onProgress({ percent }, file);
+        },
+      });
+
+
+      if (response.data.success && response.data.data?.url) {
+        onSuccess(response.data, file); // Panggil onSuccess jika berhasil
+      } else {
+        onError(new Error(response.data.message || "Gagal mengunggah gambar."));
+      }
+    } catch (error) {
+      console.error("Error during custom upload request:", error);
+      onError(error); // Panggil onError jika ada error Axios
+    }
+  };
+
+
+  // Fungsi handleChange Upload (dipicu oleh perubahan status file)
+  const handleChange = async ({ file, fileList }) => {
+    setFileList(fileList); // Selalu perbarui fileList untuk menampilkan Upload
+
+    if (file.status === 'done') {
+      const uploadedImageUrl = file.response?.data?.url || file.response?.url;
+
+      if (uploadedImageUrl) {
+        try {
+          if (!profilData || !profilData._id) {
+            addToast({ title: "Mohon buat profil terlebih dahulu sebelum mengunggah logo.", variant: "info" });
+            setFileList([]);
+            return;
+          }
+
+          const dataToUpdate = {
+            _id: profilData._id,
+            name: profilData.name,
+            visi: profilData.visi,
+            misi: profilData.misi,
+            about: profilData.about,
+            logo: uploadedImageUrl,
+            tanggal: profilData.tanggal ? dayjs(profilData.tanggal).toISOString() : null,
+          };
+
+          const response = await FetchFromAxios({
+            ...getAPI.editAbout,
+            data: dataToUpdate
+          });
+
+          if (response.data.success) {
+            addToast({ title: "Logo berhasil diunggah dan disimpan!", variant: 'success' });
+            fetchAboutData();
+          } else {
+            addToast({ title: response.data.message || "Gagal menyimpan logo!", variant: 'error' });
+            setFileList([]);
+          }
+        } catch (error) {
+          addToast({ title: error.response?.data?.message || "Kesalahan menyimpan logo.", variant: 'error' });
+          setFileList([]);
+        }
+      } else {
+        addToast({ title: "URL gambar tidak ditemukan dari respons unggahan.", variant: 'error' });
+        setFileList([]);
+      }
+    } else if (file.status === 'error') {
+      addToast({ title: "Gagal mengunggah gambar.", variant: 'error' });
+      setFileList([]);
+    } else if (file.status === 'removed') {
+      // hapus logo dari profil jika file dihapus
+      if (profilData && profilData._id) {
+        try {
+          const dataToUpdate = {
+            _id: profilData._id,
+            ...profilData,
+            logo: null, // Set logo menjadi null
+            tanggal: profilData.tanggal ? dayjs(profilData.tanggal).toISOString() : null,
+          };
+          const response = await FetchFromAxios({
+            ...getAPI.editAbout,
+            data: dataToUpdate
+          });
+          if (response.data.success) {
+            addToast({ title: "Logo berhasil dihapus!", variant: 'success' });
+            fetchAboutData();
+          } else {
+            addToast({ title: response.data.message || "Gagal menghapus logo!", variant: 'error' });
+          }
+        } catch (error) {
+          console.error("Error menghapus logo dari profil:", error);
+          addToast({ title: error.response?.data?.message || "Kesalahan menghapus logo.", variant: 'error' });
+        }
+      }
+    }
+  };
 
   // Fungsi handle preview gambar
   const handlePreview = async file => {
@@ -159,7 +277,7 @@ const ProfilAdminComponent = () => {
       </div>
       <div className='my-4 w-full'>
         <Upload
-          action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload" // Ganti dengan endpoint upload gambar Anda yang sebenarnya
+          customRequest={handleUploadLogo} // Gunakan customRequest untuk mengunggah logo
           listType="picture-card"
           fileList={fileList}
           onPreview={handlePreview}
