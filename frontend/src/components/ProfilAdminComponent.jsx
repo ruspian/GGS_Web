@@ -268,8 +268,8 @@ const ProfilAdminComponent = () => {
   return (
     <div className='container w-screen mx-auto py-4'>
       <div className='w-full'>
-        <h1 className='text-3xl font-bold text-emerald-600'>Profil</h1>
-        <hr className='border text-gray-400 w-full mt-2' />
+        <h1 className='text-3xl font-extrabold text-emerald-700'>Manajemen Profil</h1>
+        <hr className='border-t-2 border-emerald-400 w-24 mt-2 mb-4' />
       </div>
       <div className='my-4 w-full'>
         <Upload

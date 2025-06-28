@@ -19,6 +19,7 @@ import { RiFileUserLine, RiLogoutBoxLine } from "react-icons/ri";
 import { LuListTodo } from "react-icons/lu";
 import { BiUserPin } from "react-icons/bi";
 import { GrGallery } from "react-icons/gr";
+import { FaRegUser } from "react-icons/fa";
 import { useDispatch, useSelector } from 'react-redux';
 import FetchFromAxios from '../utils/AxiosUtil';
 import getAPI from '../common/getAPI';
@@ -150,6 +151,14 @@ const AdminPage = () => {
                     onPress={() => { navigate('/admin/galeri'); onClose(); }}
                   >
                     Galeri
+                  </ListboxItem>
+                  <ListboxItem
+                    key="user"
+                    startContent={<FaRegUser className='text-emerald-600' />}
+                    className='text-lg font-bold h-12'
+                    onPress={() => { navigate('/admin/user'); onClose(); }}
+                  >
+                    User
                   </ListboxItem>
                   <ListboxItem
                     key="keluar"

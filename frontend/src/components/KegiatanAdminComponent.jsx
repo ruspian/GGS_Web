@@ -131,7 +131,7 @@ const KegiatanAdminComponent = () => {
     <div className='container mx-auto px-4 py-8'>
       <div className='mb-6'>
         <h1 className='text-3xl font-extrabold text-emerald-700'>Manajemen Kegiatan</h1>
-        <hr className='border-t-2 border-gray-200 w-80 mt-2 mb-4' />
+        <hr className='border-t-2 border-emerald-400 w-24 mt-2 mb-4' />
       </div>
 
       <div className='mb-6'>

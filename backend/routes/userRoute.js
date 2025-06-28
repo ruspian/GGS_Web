@@ -7,9 +7,11 @@ import {
   logoutUserController,
   uploadAvatarController,
   updateUserDetailController,
+  getAllUserController,
 } from "../controllers/userController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 import upload from "../middlewares/multerMiddleware.js";
+import { adminMiddleware } from "../middlewares/adminMiddleware.js";
 
 const userRouter = Router();
 
@@ -28,6 +30,12 @@ userRouter.put(
   authMiddleware,
   upload.single("image"),
   uploadAvatarController
+);
+userRouter.get(
+  "/all-user",
+  authMiddleware,
+  adminMiddleware,
+  getAllUserController
 );
 
 export default userRouter;

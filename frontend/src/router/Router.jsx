@@ -14,6 +14,7 @@ import ProfilAdminComponent from "../components/ProfilAdminComponent";
 import KegiatanAdminComponent from "../components/KegiatanAdminComponent";
 import AnggotaAdminComponent from "../components/AnggotaAdminComponent";
 import GaleriAdminComponent from "../components/GaleriAdminComponent";
+import UserAdminComponent from "../components/UserAdminComponent";
 
 
 const router = createBrowserRouter([
@@ -75,6 +76,10 @@ const router = createBrowserRouter([
           {
             path: 'galeri',
             element: <GaleriAdminComponent />
+          },
+          {
+            path: 'user',
+            element: <UserAdminComponent />
           },
         ]
       }

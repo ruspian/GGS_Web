@@ -9,6 +9,7 @@ import databaseConnect from "./config/databaseConnect.js";
 import aboutRouter from "./routes/aboutRoute.js";
 import uploadFileRouter from "./routes/uploadFileRoute.js";
 import kegiatanRouter from "./routes/kegiatanRoute.js";
+import anggotaRouter from "./routes/anggotaRoute.js";
 
 // inisialisasi dotenv
 dotenv.config();
@@ -37,20 +38,20 @@ app.use("/api/user", userRouter);
 app.use("/api/file", uploadFileRouter);
 app.use("/api/about", aboutRouter);
 app.use("/api/kegiatan", kegiatanRouter);
+app.use("/api/anggota", anggotaRouter),
+  // --- GLOBAL ERROR HANDLING MIDDLEWARE ---
+  app.use((err, req, res, next) => {
+    console.error("----------------------------------------------------");
+    console.error("KESALAHAN SERVER TERTANGKAP OLEH GLOBAL HANDLER:");
+    console.error(err.stack); // cetak stack trace lengkap dari error
+    console.error("----------------------------------------------------");
 
-// --- GLOBAL ERROR HANDLING MIDDLEWARE ---
-app.use((err, req, res, next) => {
-  console.error("----------------------------------------------------");
-  console.error("KESALAHAN SERVER TERTANGKAP OLEH GLOBAL HANDLER:");
-  console.error(err.stack); // cetak stack trace lengkap dari error
-  console.error("----------------------------------------------------");
-
-  res.status(err.statusCode || 500).json({
-    message: err.message || "Kesalahan Pada Server, Coba Lagi Nanti!",
-    error: true,
-    success: false,
+    res.status(err.statusCode || 500).json({
+      message: err.message || "Kesalahan Pada Server, Coba Lagi Nanti!",
+      error: true,
+      success: false,
+    });
   });
-});
 
 // jalankan servet
 databaseConnect()

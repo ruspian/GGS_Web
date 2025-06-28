@@ -17,6 +17,10 @@ const getAPI = {
     url: "/api/user/user-detail",
     method: "GET",
   },
+  getAllUser: {
+    url: "/api/user/all-user",
+    method: "GET",
+  },
   logout: {
     url: "/api/user/logout",
     method: "GET",
@@ -59,6 +63,18 @@ const getAPI = {
   },
   deleteKegiatan: {
     url: "/api/kegiatan/delete-kegiatan",
+    method: "DELETE",
+  },
+  createAnggota: {
+    url: "/api/anggota/create-anggota",
+    method: "POST",
+  },
+  getAllAnggota: {
+    url: "/api/anggota/get-all-anggota",
+    method: "GET",
+  },
+  deleteAnggota: {
+    url: "/api/anggota/delete-anggota",
     method: "DELETE",
   },
 };

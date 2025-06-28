@@ -385,3 +385,25 @@ export const updateUserDetailController = async (req, res) => {
     });
   }
 };
+
+// controller ambil semua user
+export const getAllUserController = async (req, res) => {
+  try {
+    const getUsers = await UserModel.find({})
+      .select("-password -refresh_token -access_token")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      message: "Berhasil mengambil semua user!",
+      error: false,
+      success: true,
+      data: getUsers,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "Kesalahan Pada Server, Coba Lagi Nanti!",
+      error: true,
+      success: false,
+    });
+  }
+};
