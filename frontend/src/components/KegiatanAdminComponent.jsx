@@ -78,7 +78,6 @@ const KegiatanAdminComponent = () => {
   const handleAddSuccess = () => {
     fetchKegiatanData();
     setIsModalOpenAdd(false);
-    addToast({ title: "Kegiatan berhasil ditambahkan!", variant: 'success' });
   };
 
   const handleShowEditModal = (kegiatan) => {
@@ -91,11 +90,10 @@ const KegiatanAdminComponent = () => {
     setSelectedKegiatan(null);
   };
 
-  const handleEditSuccess = (updatedKegiatan) => {
+  const handleEditSuccess = () => {
     fetchKegiatanData();
     setIsModalOpenEdit(false);
     setSelectedKegiatan(null);
-    addToast({ title: "Kegiatan berhasil diupdate!", variant: 'success' });
   };
 
   const handleShowDeleteModal = (kegiatan) => {
@@ -108,11 +106,10 @@ const KegiatanAdminComponent = () => {
     setSelectedKegiatan(null);
   };
 
-  const handleDeleteSuccess = (deletedId) => {
+  const handleDeleteSuccess = () => {
     fetchKegiatanData();
     setIsModalOpenDelete(false);
     setSelectedKegiatan(null);
-    addToast({ title: "Kegiatan berhasil dihapus!", variant: 'success' });
   };
 
   const itemsPerPage = 5;
@@ -121,8 +118,6 @@ const KegiatanAdminComponent = () => {
     currentPage * itemsPerPage
   );
   const totalPages = Math.ceil(kegiatanData.length / itemsPerPage);
-
-
 
   if (loading) {
     return (
@@ -228,8 +223,25 @@ const KegiatanAdminComponent = () => {
                   </TableCell>
                   <TableCell>
                     <div className='flex flex-col sm:flex-row gap-2 justify-center items-center'>
-                      <Button color='danger' variant='flat' onPress={() => handleShowDeleteModal(kegiatan)} size='sm' className='min-w-[70px]'>Hapus</Button>
-                      <Button color='success' variant='flat' onPress={() => handleShowEditModal(kegiatan)} size='sm' className='min-w-[70px]'>Edit</Button>
+                      <Button
+                        color='danger'
+                        variant='flat'
+                        onPress={() => handleShowDeleteModal(kegiatan)}
+                        size='sm' className='min-w-[70px]'
+                      >
+                        Hapus
+                      </Button>
+
+
+                      <Button
+                        color='success'
+                        variant='bordered'
+                        onPress={() => handleShowEditModal(kegiatan)}
+                        size='sm'
+                        className='min-w-[70px]'
+                      >
+                        Edit
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>

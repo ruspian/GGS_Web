@@ -1,6 +1,8 @@
 import { Router } from "express";
 import {
   createKegiatanController,
+  deleteKegiatanController,
+  editKegiatanController,
   getAllKegiatanController,
 } from "../controllers/kegiatanController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
@@ -15,5 +17,17 @@ kegiatanRouter.post(
   createKegiatanController
 );
 kegiatanRouter.get("/get-kegiatan", getAllKegiatanController);
+kegiatanRouter.put(
+  "/edit-kegiatan",
+  authMiddleware,
+  adminMiddleware,
+  editKegiatanController
+);
+kegiatanRouter.delete(
+  "/delete-kegiatan",
+  authMiddleware,
+  adminMiddleware,
+  deleteKegiatanController
+);
 
 export default kegiatanRouter;

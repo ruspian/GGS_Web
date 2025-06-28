@@ -76,6 +76,8 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
       if (serializableResponseData.tanggal && dayjs.isDayjs(serializableResponseData.tanggal)) {
         serializableResponseData.tanggal = serializableResponseData.tanggal.toISOString();
       }
+
+
       dispatch(editAbout(serializableResponseData)); // Dispatch data yang sudah serializable
 
       setIsModalOpenEdit(false);

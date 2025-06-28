@@ -53,6 +53,14 @@ const getAPI = {
     url: "/api/kegiatan/get-kegiatan",
     method: "GET",
   },
+  editKegiatan: {
+    url: "/api/kegiatan/edit-kegiatan",
+    method: "PUT",
+  },
+  deleteKegiatan: {
+    url: "/api/kegiatan/delete-kegiatan",
+    method: "DELETE",
+  },
 };
 
 export default getAPI;
