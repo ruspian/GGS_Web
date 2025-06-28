@@ -8,6 +8,7 @@ import userRouter from "./routes/userRoute.js";
 import databaseConnect from "./config/databaseConnect.js";
 import aboutRouter from "./routes/aboutRoute.js";
 import uploadFileRouter from "./routes/uploadFileRoute.js";
+import kegiatanRouter from "./routes/kegiatanRoute.js";
 
 // inisialisasi dotenv
 dotenv.config();
@@ -35,6 +36,7 @@ app.use(
 app.use("/api/user", userRouter);
 app.use("/api/file", uploadFileRouter);
 app.use("/api/about", aboutRouter);
+app.use("/api/kegiatan", kegiatanRouter);
 
 // --- GLOBAL ERROR HANDLING MIDDLEWARE ---
 app.use((err, req, res, next) => {

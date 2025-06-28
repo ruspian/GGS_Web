@@ -45,6 +45,14 @@ const getAPI = {
     url: "/api/about/edit-about",
     method: "PUT",
   },
+  createKegiatan: {
+    url: "/api/kegiatan/create-kegiatan",
+    method: "POST",
+  },
+  getKegiatan: {
+    url: "/api/kegiatan/get-kegiatan",
+    method: "GET",
+  },
 };
 
 export default getAPI;

@@ -44,7 +44,7 @@ const EditKegiatanAdminComponent = ({ isModalOpen, handleOk, handleCancel }) => 
             <DatePicker className='w-full' onChange={''} needConfirm />
           </Form.Item>
           <Form.Item name="description" label="Deskripsi">
-            <TextArea placeholder="Visi" autoSize />
+            <TextArea placeholder="Deskripsi" autoSize />
           </Form.Item>
           <Form.Item name="foto" label="Foto">
             <Upload {...props}>
