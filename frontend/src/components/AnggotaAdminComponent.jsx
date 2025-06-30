@@ -85,7 +85,7 @@ const AnggotaAdminComponent = () => {
   );
   const totalPages = Math.ceil(dataAnggota.length / itemsPerPage);
 
-  console.log('selectedAnggota', selectedAnggota);
+  console.log('dataAnggota', dataAnggota);
 
 
 

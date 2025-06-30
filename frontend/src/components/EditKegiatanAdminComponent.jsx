@@ -15,6 +15,7 @@ const EditKegiatanAdminComponent = ({ isModalOpen, initialValues, onEditSuccess,
   const [fileList, setFileList] = useState([]);
   const [uploadedImageUrls, setUploadedImageUrls] = useState([]);
 
+
   // Efek untuk mengisi form dan fileList ketika modal dibuka atau initialValues berubah
   useEffect(() => {
     if (isModalOpen && initialValues) {
@@ -130,6 +131,7 @@ const EditKegiatanAdminComponent = ({ isModalOpen, initialValues, onEditSuccess,
       }
 
       addToast({ title: response.data.message, variant: 'success' });
+
       handleCancel();
       if (onEditSuccess) {
         onEditSuccess(response.data.data);

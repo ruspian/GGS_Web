@@ -55,31 +55,31 @@ const router = createBrowserRouter([
       },
       {
         path: 'admin',
-        element: <AdminPage />,
+        element: <AdminPermissionLayout><AdminPage /></AdminPermissionLayout>,
         children: [
           {
             path: 'dashboard',
-            element: <AdminDashboardComponent />
+            element: <AdminPermissionLayout><AdminDashboardComponent /></AdminPermissionLayout>
           },
           {
             path: 'profil',
-            element: <ProfilAdminComponent />
+            element: <AdminPermissionLayout><ProfilAdminComponent /></AdminPermissionLayout>
           },
           {
             path: 'kegiatan',
-            element: <KegiatanAdminComponent />
+            element: <AdminPermissionLayout><KegiatanAdminComponent /></AdminPermissionLayout>
           },
           {
             path: 'anggota',
-            element: <AnggotaAdminComponent />
+            element: <AdminPermissionLayout><AnggotaAdminComponent /></AdminPermissionLayout>
           },
           {
             path: 'galeri',
-            element: <GaleriAdminComponent />
+            element: <AdminPermissionLayout><GaleriAdminComponent /></AdminPermissionLayout>
           },
           {
             path: 'user',
-            element: <UserAdminComponent />
+            element: <AdminPermissionLayout><UserAdminComponent /></AdminPermissionLayout>
           },
         ]
       }

@@ -5,8 +5,9 @@ import { addToast } from '@heroui/react';
 import { useForm } from 'antd/es/form/Form';
 import { useState } from 'react';
 import FetchFromAxios from '../utils/AxiosUtil';
-import getAPI from '../common/getAPI';
 import dayjs from 'dayjs';
+import { useDispatch } from 'react-redux';
+import { addKegiatanThunk } from '../store/kegiatanSliceRedux';
 
 
 const AddKegiatanAdminComponent = ({ isAddModalOpen, handleCancelAdd, onAddSuccess }) => {
@@ -14,6 +15,7 @@ const AddKegiatanAdminComponent = ({ isAddModalOpen, handleCancelAdd, onAddSucce
   const [uploadedImageUrls, setUploadedImageUrls] = useState([]);
 
 
+  const dispatch = useDispatch();
   const { TextArea } = Input;
 
   const [form] = useForm();
@@ -62,7 +64,7 @@ const AddKegiatanAdminComponent = ({ isAddModalOpen, handleCancelAdd, onAddSucce
         addToast({ title: "URL gambar tidak ditemukan dari respons unggahan.", variant: 'error' });
       }
     } else if (file.status === 'removed') {
-      // Jika file dihapus dari daftar unggahan Ant Design
+      // Jika file dihapus dari daftar unggahan
       const removedUrl = file.url || file.response?.url; // Ambil URL file yang dihapus
       if (removedUrl) {
         setUploadedImageUrls(prevUrls => prevUrls.filter(url => url !== removedUrl));
@@ -93,20 +95,18 @@ const AddKegiatanAdminComponent = ({ isAddModalOpen, handleCancelAdd, onAddSucce
         image: uploadedImageUrls,
       };
 
+      // panggil thunk redux
+      const addKegiatanFromThunkRedux = await dispatch(addKegiatanThunk(dataToSend));
 
-      const response = await FetchFromAxios({
-        ...getAPI.createKegiatan,
-        data: dataToSend,
-      })
-
-
-      if (!response.data.success) {
-        addToast({ title: response.data.message, variant: 'error' });
-        return;
+      // jika berhasil
+      if (addKegiatanThunk.fulfilled.match(addKegiatanFromThunkRedux)) {
+        addToast({ title: addKegiatanFromThunkRedux.payload, variant: 'success' });
+      } else {
+        // jika gagal
+        const errorMessage = addKegiatanFromThunkRedux.payload || "Gagal menambahkan kegiatan!";
+        addToast({ title: errorMessage, variant: 'error' });
+        return
       }
-
-      addToast({ title: response.data.message, variant: 'success' });
-
 
       form.resetFields();  // kosokan form setelah sukses
       setFileList([]); // Kosongkan tampilan Upload
@@ -115,10 +115,9 @@ const AddKegiatanAdminComponent = ({ isAddModalOpen, handleCancelAdd, onAddSucce
       // Tutup modal setelah sukses
       handleCancelAdd();
 
-      if (onAddSuccess) (
-        onAddSuccess(response.data.data)
-      )
-
+      if (onAddSuccess) {
+        onAddSuccess();
+      }
 
     } catch (errorInfo) {
       let errorMessage = "Terjadi kesalahan. Silakan coba lagi nanti!";
@@ -133,7 +132,6 @@ const AddKegiatanAdminComponent = ({ isAddModalOpen, handleCancelAdd, onAddSucce
         errorMessage = errorInfo.message;
       }
       addToast({ title: errorMessage, variant: 'error' });
-
 
     }
   };

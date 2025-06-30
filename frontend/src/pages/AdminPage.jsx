@@ -1,4 +1,3 @@
-import React from 'react';
 import { GiHamburgerMenu } from "react-icons/gi";
 import logo from '../assets/logo.png';
 import { MdOutlineSpaceDashboard } from "react-icons/md";
@@ -26,6 +25,9 @@ import getAPI from '../common/getAPI';
 import { logoutUser } from '../store/userSliceRedux';
 
 const AdminPage = () => {
+
+
+
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const navigate = useNavigate();
 
@@ -42,9 +44,6 @@ const AdminPage = () => {
         ...getAPI.logout,
         userId: user?._id,
       });
-
-      console.log("response", response);
-
 
       // jika berhasil
       if (response.data.success) {
@@ -64,6 +63,7 @@ const AdminPage = () => {
       addToast({ title: error.response.data.message });
     }
   }
+
 
 
   return (

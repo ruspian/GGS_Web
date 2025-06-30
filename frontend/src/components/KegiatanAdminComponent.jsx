@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Table,
   TableHeader,
@@ -10,59 +10,58 @@ import {
   Spinner,
   Image,
   Button,
+  addToast,
 } from "@heroui/react";
-import { addToast } from '@heroui/toast';
 import EditKegiatanAdminComponent from './EditKegiatanAdminComponent';
 import DeleteKegiatanAdminComponent from './DeleteKegiatanAdminComponent';
 import AddKegiatanAdminComponent from './AddKegiatanAdminComponent';
-import FetchFromAxios from '../utils/AxiosUtil';
-import getAPI from '../common/getAPI';
-import { useDispatch } from 'react-redux';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id';
-import { setKegiatan } from '../store/kegiatanSliceRedux';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchKegiatanThunk } from '../store/kegiatanSliceRedux';
 dayjs.locale('id');
 
 const KegiatanAdminComponent = () => {
-  // State untuk mengontrol modal
+  // State 
   const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
-
-  // State untuk data kegiatan
-  const [kegiatanData, setKegiatanData] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedKegiatan, setSelectedKegiatan] = useState(null);
 
+  // data kegiatan redux
+  const kegiatanData = useSelector((state) => state.kegiatan.data);
+  const kegiatanStatus = useSelector((state) => state.kegiatan.status);
+  const kegiatanError = useSelector((state) => state.kegiatan.error);
+
   const dispatch = useDispatch();
 
-  // Fungsi untuk mengambil data kegiatan dari backend
-  const fetchKegiatanData = async () => {
-    setLoading(true);
-    try {
-      const response = await FetchFromAxios({
-        ...getAPI.getKegiatan,
-      });
 
-      if (response.data.success && Array.isArray(response.data.data)) {
-        setKegiatanData(response.data.data);
-        dispatch(setKegiatan(response.data.data));
-      } else {
-        setKegiatanData([]);
-        addToast({ title: response.data.message || "Gagal memuat data kegiatan.", variant: 'error' });
-      }
-    } catch (error) {
-      setKegiatanData([]);
-      addToast({ title: error.response?.data?.message || "Kesalahan mengambil data kegiatan.", variant: 'error' });
-    } finally {
-      setLoading(false);
+  // Fungsi untuk memicu pengambilan data kegiatan dari Redux
+  const refreshFetchKegiatanData = useCallback((force = false) => {
+
+    // cek status kegiatan
+    if (force || kegiatanStatus === "idle" || kegiatanStatus === "failed") {
+      dispatch(fetchKegiatanThunk());
     }
-  };
+  }, [dispatch, kegiatanStatus]);
 
+  // panggil refreshFetchKegiatanData saat komponen dimuat
   useEffect(() => {
-    fetchKegiatanData();
-  }, [dispatch]);
+    refreshFetchKegiatanData();
+  }, [refreshFetchKegiatanData]);
+
+  // Tampilkan toast error jika ada error dari Redux
+  useEffect(() => {
+    if (kegiatanStatus === 'failed' && kegiatanError) {
+      console.log('kegiatanError', kegiatanError);
+
+      addToast({ title: `Error: ${kegiatanError}`, variant: 'error' });
+    }
+  }, [kegiatanStatus, kegiatanError]);
+
+  console.log('kegiatanData', kegiatanData);
+
 
 
   // --- Fungsi Handle Modal ---
@@ -76,13 +75,26 @@ const KegiatanAdminComponent = () => {
   };
 
   const handleAddSuccess = () => {
-    fetchKegiatanData();
     setIsModalOpenAdd(false);
+    refreshFetchKegiatanData(true); // ubah jadi force=true untuk memicu refresh data
   };
 
+
   const handleShowEditModal = (kegiatan) => {
-    setSelectedKegiatan(kegiatan);
-    setIsModalOpenEdit(true);
+    console.log("handleShowEditModal: kegiatan =", kegiatan);
+
+
+    // Pastikan 'kegiatan' dan '_id'nya ada
+    if (kegiatan && typeof kegiatan._id === 'string' && kegiatan._id.length > 0) {
+      console.log("Data kegiatan valid untuk diedit:", kegiatan);
+
+      setSelectedKegiatan(kegiatan);
+      setIsModalOpenEdit(true);
+    } else {
+      addToast({ title: "Data kegiatan tidak valid untuk diedit. ID tidak ditemukan.", variant: 'error' });
+      console.log("Data kegiatan tidak valid untuk diedit. ID tidak ditemukan.", kegiatan);
+
+    }
   };
 
   const handleCancelEditModal = () => {
@@ -91,8 +103,8 @@ const KegiatanAdminComponent = () => {
   };
 
   const handleEditSuccess = () => {
-    fetchKegiatanData();
     setIsModalOpenEdit(false);
+    refreshFetchKegiatanData(true);
     setSelectedKegiatan(null);
   };
 
@@ -107,9 +119,9 @@ const KegiatanAdminComponent = () => {
   };
 
   const handleDeleteSuccess = () => {
-    fetchKegiatanData();
     setIsModalOpenDelete(false);
     setSelectedKegiatan(null);
+    refreshFetchKegiatanData(true); // panggil refreshFetchKegiatanData dengan force=true
   };
 
   const itemsPerPage = 5;
@@ -118,6 +130,13 @@ const KegiatanAdminComponent = () => {
     currentPage * itemsPerPage
   );
   const totalPages = Math.ceil(kegiatanData.length / itemsPerPage);
+
+
+  // inisialisasi loading
+  const loading = kegiatanStatus === 'loading';
+
+  console.log('loading', loading);
+
 
   if (loading) {
     return (
@@ -176,6 +195,7 @@ const KegiatanAdminComponent = () => {
             }
           >
             <TableHeader>
+              <TableColumn className='hidden'></TableColumn>
               <TableColumn className='text-emerald-700 font-bold'>No</TableColumn>
               <TableColumn className='text-emerald-700 font-bold'>Nama Kegiatan</TableColumn>
               <TableColumn className='text-emerald-700 font-bold'>Tanggal</TableColumn>
@@ -197,62 +217,66 @@ const KegiatanAdminComponent = () => {
                 ) : null
               }
             >
-              {paginatedData.map((kegiatan, index) => (
-                <TableRow key={kegiatan.id || `kegiatan-${index}`}>
-                  <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
-                  <TableCell>{kegiatan.name}</TableCell>
-                  <TableCell>{kegiatan.date ? dayjs(kegiatan.date).format('dddd, DD-MM-YYYY') : 'N/A'}</TableCell>
-                  <TableCell className='line-clamp-6 md:line-clamp-none max-w-xs text-sm text-wrap'>
-                    {kegiatan.description}
-                  </TableCell>
-                  <TableCell>
-                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 p-1'>
-                      {kegiatan.image && kegiatan.image.length > 0 ? (
-                        kegiatan.image.map((fotoUrl, fotoIndex) => (
-                          <Image
-                            key={fotoIndex}
-                            alt={`Foto Kegiatan ${index + 1}-${fotoIndex + 1}`}
-                            src={fotoUrl}
-                            className="w-20 h-12 object-cover rounded-md shadow-sm"
-                          />
-                        ))
-                      ) : (
-                        <span className='text-gray-500 text-xs'>Tidak ada foto</span>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className='flex flex-col sm:flex-row gap-2 justify-center items-center'>
-                      <Button
-                        color='danger'
-                        variant='flat'
-                        onPress={() => handleShowDeleteModal(kegiatan)}
-                        size='sm' className='min-w-[70px]'
-                      >
-                        Hapus
-                      </Button>
+              {(Array.isArray(paginatedData) ? paginatedData : [])
+                .filter((kegiatan) => kegiatan && kegiatan._id) // filter undefined dan yang tidak punya _id
+                .map((kegiatan, index) => (
+                  <TableRow key={kegiatan?._id}>
+                    <TableCell className='hidden'>{kegiatan._id}</TableCell>
+                    <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
+                    <TableCell>{kegiatan.name}</TableCell>
+                    <TableCell>{kegiatan.date ? dayjs(kegiatan.date).format('dddd, DD-MM-YYYY') : 'N/A'}</TableCell>
+                    <TableCell className='line-clamp-6 md:line-clamp-none max-w-xs text-sm text-wrap'>
+                      {kegiatan.description}
+                    </TableCell>
+                    <TableCell>
+                      <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 p-1'>
+                        {kegiatan.image && kegiatan.image.length > 0 ? (
+                          kegiatan.image.map((fotoUrl, fotoIndex) => (
+                            <Image
+                              key={fotoIndex}
+                              alt={`Foto Kegiatan ${index + 1}-${fotoIndex + 1}`}
+                              src={fotoUrl}
+                              className="w-20 h-12 object-cover rounded-md shadow-sm"
+                            />
+                          ))
+                        ) : (
+                          <span className='text-gray-500 text-xs'>Tidak ada foto</span>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className='flex flex-col sm:flex-row gap-2 justify-center items-center'>
+                        <Button
+                          color='danger'
+                          variant='flat'
+                          onPress={() => handleShowDeleteModal(kegiatan)}
+                          size='sm' className='min-w-[70px]'
+                        >
+                          Hapus
+                        </Button>
 
 
-                      <Button
-                        color='success'
-                        variant='bordered'
-                        onPress={() => handleShowEditModal(kegiatan)}
-                        size='sm'
-                        className='min-w-[70px]'
-                      >
-                        Edit
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                        <Button
+                          color='success'
+                          variant='bordered'
+                          onPress={() => handleShowEditModal(kegiatan)}
+                          size='sm'
+                          className='min-w-[70px]'
+                        >
+                          Edit
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </div>
       </div>
 
-      {isModalOpenEdit && (
+      {isModalOpenEdit && selectedKegiatan?._id && (
         <EditKegiatanAdminComponent
+          key={selectedKegiatan._id}
           isModalOpen={isModalOpenEdit}
           handleCancel={handleCancelEditModal}
           initialValues={selectedKegiatan}
