@@ -36,6 +36,11 @@ const KegiatanAdminComponent = () => {
 
   const dispatch = useDispatch();
 
+  const imageGaleri = useSelector((state) => state.geleri);
+
+  console.log('imageGaleri', imageGaleri);
+
+
 
   // Fungsi untuk memicu pengambilan data kegiatan dari Redux
   const refreshFetchKegiatanData = useCallback((force = false) => {

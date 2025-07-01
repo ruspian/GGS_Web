@@ -5,6 +5,7 @@ import { fetchKegiatanThunk } from '../store/kegiatanSliceRedux';
 import { addToast, Spinner } from '@heroui/react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id';
+// import { setGaleri } from '../store/galeriSliceRedux';
 
 dayjs.locale('id');
 
@@ -56,13 +57,12 @@ const GaleriAdminComponent = () => {
       }
     });
 
-
-    console.log('GaleriAdminComponent - allGalleryItems (flattened):', images);
-
+    // dispatch gambar ke redux
+    // dispatch(setGaleri(images));
 
     // kembalikan daftar gambar
     return images;
-  }, [kegiatanData]);
+  }, [kegiatanData, dispatch]);
 
   // Tampilkan loading state
   if (kegiatanStatus === 'loading') {
