@@ -6,21 +6,35 @@ const initialState = {
   data: [],
   status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
+  totalCount: 0,
+  totalPage: 1,
+  currentPage: 1,
+  limit: 10,
 };
 
 // Thunk untuk Mengambil Semua Data Kegiatan
 export const fetchKegiatanThunk = createAsyncThunk(
   "kegiatan/fetchKegiatanThunk",
-  async (_, { rejectWithValue }) => {
+  async ({ page, limit }, { rejectWithValue }) => {
     try {
       // kirim request ke backend
       const response = await FetchFromAxios({
         ...getAPI.getKegiatan,
+        data: {
+          page,
+          limit,
+        },
       });
 
       // jika berhasil
-      if (response.data.success && Array.isArray(response.data.data)) {
-        return response.data.data;
+      if (response.data.success) {
+        return {
+          data: response.data.data,
+          totalCount: response.data.totalCount,
+          totalPage: response.data.totalPage,
+          currentPage: response.data.currentPage,
+          limit: response.data.limit,
+        };
       } else {
         // jika gagal
         return rejectWithValue(
@@ -81,8 +95,6 @@ export const addKegiatanThunk = createAsyncThunk(
         );
       }
     } catch (error) {
-      console.log("ini error dari addKegiatanThunk", error);
-
       return rejectWithValue(
         error.response?.data?.message || "Kesalahan saat menambah kegiatan."
       );
@@ -136,6 +148,9 @@ const kegiatanSlice = createSlice({
         (kegiatan) => kegiatan._id !== action.payload
       );
     },
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -146,7 +161,11 @@ const kegiatanSlice = createSlice({
       })
       .addCase(fetchKegiatanThunk.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.data = action.payload; // Mengisi data dari hasil fetch
+        state.data = action.payload.data; // Mengisi data dari hasil fetch
+        state.totalPage = action.payload.totalPage;
+        state.totalCount = action.payload.totalCount;
+        state.currentPage = action.payload.currentPage;
+        state.limit = action.payload.limit;
         state.error = null;
       })
       .addCase(fetchKegiatanThunk.rejected, (state, action) => {
@@ -158,10 +177,11 @@ const kegiatanSlice = createSlice({
       .addCase(addKegiatanThunk.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(addKegiatanThunk.fulfilled, (state, action) => {
+      .addCase(addKegiatanThunk.fulfilled, (state) => {
         state.status = "succeeded";
-        state.data.push(action.payload); // Tambahkan kegiatan baru ke array data
-        state.error = null;
+
+        // state.totalCount += 1;
+        // state.totalPage = Math.ceil(state.totalCount / state.limit) || 1;
       })
       .addCase(addKegiatanThunk.rejected, (state, action) => {
         state.status = "failed";
@@ -205,6 +225,11 @@ const kegiatanSlice = createSlice({
   },
 });
 
-export const { setKegiatan, editKegiatan, addKegiatan, deleteKegiatan } =
-  kegiatanSlice.actions;
+export const {
+  setKegiatan,
+  editKegiatan,
+  addKegiatan,
+  deleteKegiatan,
+  setCurrentPage,
+} = kegiatanSlice.actions;
 export default kegiatanSlice.reducer;

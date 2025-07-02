@@ -61,10 +61,39 @@ export const createKegiatanController = async (req, res) => {
 // controller untuk mendapatkan semua kegiatan
 export const getAllKegiatanController = async (req, res) => {
   try {
-    const kategoriData = await KegiatanModel.find({}).sort({ createdAt: -1 });
+    let { page, limit } = req.body;
+
+    // pastikan tipe dari page dan limit adalah integer
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
+
+    // jika page tidak ada atau page = NaN
+    if (isNaN(page) || page <= 0) {
+      page = 1;
+    }
+
+    // jika limit tidak ada
+    if (isNaN(limit) || limit <= 0) {
+      limit = 10;
+    }
+
+    // abaikan data sebelum page
+    const skip = (page - 1) * limit;
+
+    // ambil data kegiatan dan hitung jumlah kegiatan
+    const [data, totalCount] = await Promise.all([
+      // akan dimasukkan ke data
+      KegiatanModel.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit),
+
+      // akan dimasukkan ke totalCount
+      KegiatanModel.countDocuments({}),
+    ]);
+
+    // total halaman
+    const totalPage = Math.ceil(totalCount / limit);
 
     // jika tidak ada kegiatan
-    if (!kategoriData) {
+    if (!data) {
       return res.status(404).json({
         message: "Kegiatan tidak ditemukan!",
         success: false,
@@ -77,7 +106,11 @@ export const getAllKegiatanController = async (req, res) => {
       message: "Kegiatan berhasil ditemukan!",
       success: true,
       error: false,
-      data: kategoriData,
+      data: data,
+      totalCount: totalCount,
+      totalPage: totalPage,
+      limit: limit,
+      currentPage: page,
     });
   } catch (error) {
     return res.status(500).json({

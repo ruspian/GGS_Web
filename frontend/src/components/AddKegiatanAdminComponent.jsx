@@ -6,8 +6,9 @@ import { useForm } from 'antd/es/form/Form';
 import { useState } from 'react';
 import FetchFromAxios from '../utils/AxiosUtil';
 import dayjs from 'dayjs';
-import { useDispatch } from 'react-redux';
-import { addKegiatanThunk } from '../store/kegiatanSliceRedux';
+import getAPI from '../common/getAPI';
+// import { useDispatch } from 'react-redux';
+// import { addKegiatanThunk } from '../store/kegiatanSliceRedux';
 
 
 const AddKegiatanAdminComponent = ({ isAddModalOpen, handleCancelAdd, onAddSuccess }) => {
@@ -15,7 +16,7 @@ const AddKegiatanAdminComponent = ({ isAddModalOpen, handleCancelAdd, onAddSucce
   const [uploadedImageUrls, setUploadedImageUrls] = useState([]);
 
 
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const { TextArea } = Input;
 
   const [form] = useForm();
@@ -95,18 +96,33 @@ const AddKegiatanAdminComponent = ({ isAddModalOpen, handleCancelAdd, onAddSucce
         image: uploadedImageUrls,
       };
 
-      // panggil thunk redux
-      const addKegiatanFromThunkRedux = await dispatch(addKegiatanThunk(dataToSend));
 
-      // jika berhasil
-      if (addKegiatanThunk.fulfilled.match(addKegiatanFromThunkRedux)) {
-        addToast({ title: addKegiatanFromThunkRedux.payload, variant: 'success' });
-      } else {
-        // jika gagal
-        const errorMessage = addKegiatanFromThunkRedux.payload || "Gagal menambahkan kegiatan!";
-        addToast({ title: errorMessage, variant: 'error' });
-        return
+      const response = await FetchFromAxios({
+        ...getAPI.createKegiatan,
+        data: dataToSend,
+      });
+
+      if (!response.data.success) {
+        addToast({ title: response.data.message, variant: 'error' });
+        return;
       }
+
+      addToast({ title: response.data.message, variant: 'success' });
+
+      // panggil thunk redux
+      // const addKegiatanFromThunkRedux = await dispatch(addKegiatanThunk(dataToSend));
+
+      // // jika berhasil
+      // if (addKegiatanThunk.fulfilled.match(addKegiatanFromThunkRedux)) {
+      //   addToast({ title: addKegiatanFromThunkRedux.payload, variant: 'success' });
+      // } else {
+      //   // jika gagal
+      //   const errorMessage = addKegiatanFromThunkRedux.payload || "Gagal menambahkan kegiatan!";
+      //   addToast({ title: errorMessage, variant: 'error' });
+      //   console.log(errorMessage);
+
+      //   return
+      // }
 
       form.resetFields();  // kosokan form setelah sukses
       setFileList([]); // Kosongkan tampilan Upload
@@ -125,10 +141,16 @@ const AddKegiatanAdminComponent = ({ isAddModalOpen, handleCancelAdd, onAddSucce
         errorMessage = "Mohon lengkapi semua field yang wajib.";
         errorInfo.errorFields.forEach(field => {
           addToast({ title: field.errors[0], variant: 'error' });
+          console.log(field.errors[0]);
+
         });
       } else if (errorInfo.response && errorInfo.response.data && errorInfo.response.data.message) {
+        console.log(errorInfo.response.data.message);
+
         errorMessage = errorInfo.response.data.message;
       } else if (errorInfo.message) {
+        console.log(errorInfo.message);
+
         errorMessage = errorInfo.message;
       }
       addToast({ title: errorMessage, variant: 'error' });

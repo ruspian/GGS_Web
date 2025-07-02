@@ -16,7 +16,7 @@ kegiatanRouter.post(
   adminMiddleware,
   createKegiatanController
 );
-kegiatanRouter.get("/get-kegiatan", getAllKegiatanController);
+kegiatanRouter.post("/get-kegiatan", getAllKegiatanController);
 kegiatanRouter.put(
   "/edit-kegiatan",
   authMiddleware,

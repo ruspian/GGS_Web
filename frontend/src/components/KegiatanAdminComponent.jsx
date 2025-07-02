@@ -18,7 +18,7 @@ import AddKegiatanAdminComponent from './AddKegiatanAdminComponent';
 import dayjs from 'dayjs';
 import 'dayjs/locale/id';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchKegiatanThunk } from '../store/kegiatanSliceRedux';
+import { fetchKegiatanThunk, setCurrentPage } from '../store/kegiatanSliceRedux';
 dayjs.locale('id');
 
 const KegiatanAdminComponent = () => {
@@ -26,46 +26,45 @@ const KegiatanAdminComponent = () => {
   const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const [selectedKegiatan, setSelectedKegiatan] = useState(null);
+  // const [currentPage, setCurrentPage] = useState(1);
 
   // data kegiatan redux
   const kegiatanData = useSelector((state) => state.kegiatan.data);
   const kegiatanStatus = useSelector((state) => state.kegiatan.status);
   const kegiatanError = useSelector((state) => state.kegiatan.error);
+  const totalPage = useSelector((state) => state.kegiatan.totalPage);
+  const totalCount = useSelector((state) => state.kegiatan.totalCount);
+  const currentPage = useSelector((state) => state.kegiatan.currentPage);
+  const limit = useSelector((state) => state.kegiatan.limit);
+
 
   const dispatch = useDispatch();
 
-  const imageGaleri = useSelector((state) => state.geleri);
-
-  console.log('imageGaleri', imageGaleri);
-
-
 
   // Fungsi untuk memicu pengambilan data kegiatan dari Redux
-  const refreshFetchKegiatanData = useCallback((force = false) => {
+  const refreshFetchKegiatanData = useCallback(async (pageToFetch, limitToFetch) => {
 
-    // cek status kegiatan
-    if (force || kegiatanStatus === "idle" || kegiatanStatus === "failed") {
-      dispatch(fetchKegiatanThunk());
-    }
-  }, [dispatch, kegiatanStatus]);
+    // Dispatch thunk fetchKegiatanThunk dengan parameter page dan limit
+    await dispatch(fetchKegiatanThunk({ page: pageToFetch, limit: limitToFetch }));
+  }, [dispatch]);
 
   // panggil refreshFetchKegiatanData saat komponen dimuat
   useEffect(() => {
-    refreshFetchKegiatanData();
-  }, [refreshFetchKegiatanData]);
+    // cek status kegiatan dan isi parameter
+    if (currentPage && limit && (kegiatanStatus === 'idle' || kegiatanStatus === 'failed')) {
+      // jika status idle atau failed, maka panggil refreshFetchKegiatanData
+      refreshFetchKegiatanData(currentPage, limit);
+    }
+  }, [refreshFetchKegiatanData, currentPage, limit, kegiatanStatus]);
 
   // Tampilkan toast error jika ada error dari Redux
   useEffect(() => {
     if (kegiatanStatus === 'failed' && kegiatanError) {
-      console.log('kegiatanError', kegiatanError);
-
       addToast({ title: `Error: ${kegiatanError}`, variant: 'error' });
     }
   }, [kegiatanStatus, kegiatanError]);
 
-  console.log('kegiatanData', kegiatanData);
 
 
 
@@ -79,26 +78,21 @@ const KegiatanAdminComponent = () => {
     setIsModalOpenAdd(false);
   };
 
-  const handleAddSuccess = () => {
+  const handleAddSuccess = async () => {
     setIsModalOpenAdd(false);
-    refreshFetchKegiatanData(true); // ubah jadi force=true untuk memicu refresh data
+
+    await refreshFetchKegiatanData();
   };
 
 
   const handleShowEditModal = (kegiatan) => {
-    console.log("handleShowEditModal: kegiatan =", kegiatan);
-
 
     // Pastikan 'kegiatan' dan '_id'nya ada
     if (kegiatan && typeof kegiatan._id === 'string' && kegiatan._id.length > 0) {
-      console.log("Data kegiatan valid untuk diedit:", kegiatan);
-
       setSelectedKegiatan(kegiatan);
       setIsModalOpenEdit(true);
     } else {
       addToast({ title: "Data kegiatan tidak valid untuk diedit. ID tidak ditemukan.", variant: 'error' });
-      console.log("Data kegiatan tidak valid untuk diedit. ID tidak ditemukan.", kegiatan);
-
     }
   };
 
@@ -129,18 +123,22 @@ const KegiatanAdminComponent = () => {
     refreshFetchKegiatanData(true); // panggil refreshFetchKegiatanData dengan force=true
   };
 
-  const itemsPerPage = 5;
-  const paginatedData = kegiatanData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-  const totalPages = Math.ceil(kegiatanData.length / itemsPerPage);
 
+  // Handler untuk perubahan halaman pagination
+  const handlePageChange = (page) => {
+    dispatch(setCurrentPage(page)); // Update currentPage di Redux
+    refreshFetchKegiatanData(page, limit); // Panggil fetch dengan halaman baru dan limit dari Redux
+  };
+
+  // const itemsPerPage = 5;
+  // const paginatedData = kegiatanData.slice(
+  //   (currentPage - 1) * itemsPerPage,
+  //   currentPage * itemsPerPage
+  // );
+  // const totalPages = Math.ceil(kegiatanData.length / itemsPerPage);
 
   // inisialisasi loading
   const loading = kegiatanStatus === 'loading';
-
-  console.log('loading', loading);
 
 
   if (loading) {
@@ -183,14 +181,14 @@ const KegiatanAdminComponent = () => {
             aria-label='Tabel Kegiatan'
             selectionMode='single'
             bottomContent={
-              kegiatanData.length > 0 && totalPages > 1 && (
+              totalCount > 0 && totalPage > 1 && (
                 <div className='flex w-full justify-center py-4'>
                   <Pagination
                     size='sm'
-                    total={totalPages}
+                    total={totalPage}
                     page={currentPage}
-                    onChange={setCurrentPage}
-                    limit={itemsPerPage}
+                    onChange={handlePageChange}
+                    limit={limit}
                     color='success'
                     variant='light'
                     radius='full'
@@ -222,12 +220,12 @@ const KegiatanAdminComponent = () => {
                 ) : null
               }
             >
-              {(Array.isArray(paginatedData) ? paginatedData : [])
+              {(Array.isArray(kegiatanData) ? kegiatanData : [])
                 .filter((kegiatan) => kegiatan && kegiatan._id) // filter undefined dan yang tidak punya _id
                 .map((kegiatan, index) => (
                   <TableRow key={kegiatan?._id}>
                     <TableCell className='hidden'>{kegiatan._id}</TableCell>
-                    <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
+                    <TableCell>{(currentPage - 1) * limit + index + 1}</TableCell>
                     <TableCell>{kegiatan.name}</TableCell>
                     <TableCell>{kegiatan.date ? dayjs(kegiatan.date).format('dddd, DD-MM-YYYY') : 'N/A'}</TableCell>
                     <TableCell className='line-clamp-6 md:line-clamp-none max-w-xs text-sm text-wrap'>
