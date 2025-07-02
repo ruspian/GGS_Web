@@ -17,29 +17,44 @@ import dayjs from 'dayjs';
 import FetchFromAxios from '../utils/AxiosUtil';
 import getAPI from '../common/getAPI';
 import DeleteAnggotaAdminComponent from './DeleteAnggotaAdminComponent';
+import { useCallback } from 'react';
 
 
 
 const AnggotaAdminComponent = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1); // halaman saat ini
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [dataAnggota, setDataAnggota] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedAnggota, setSelectedAnggota] = useState(null);
+  const [totalPageCount, setTotalPageCount] = useState(1); // total halaman dari backend
+  const [totalItemsCount, setTotalItemsCount] = useState(0); // total item dari backend
+
+  // jumlah item per halaman
+  const itemsPerPage = 6;
 
 
   // fungsi ambil semua data Anggota
-  const fetchAllDataAnggota = async () => {
+  const fetchAllDataAnggota = useCallback(async () => {
     try {
+
+
       setLoading(true);
       const response = await FetchFromAxios({
         ...getAPI.getAllAnggota,
+        data: {
+          page: currentPage,
+          limit: itemsPerPage
+        }
       });
 
 
       // jika berhasil
       if (response.data.success) {
         setDataAnggota(response.data.data);
+        setTotalPageCount(response.data.totalPage);
+        setTotalItemsCount(response.data.totalCount);
+
       } else {
         setDataAnggota([]);
         addToast({ title: response.data.message || "Gagal memuat data anggota.", variant: 'error' });
@@ -50,11 +65,11 @@ const AnggotaAdminComponent = () => {
     } finally {
       setLoading(false);
     }
-  }
+  }, [currentPage, itemsPerPage]); // muat ulang saat nilai dari depedensi berubah
 
   useEffect(() => {
     fetchAllDataAnggota();
-  }, [])
+  }, [fetchAllDataAnggota])
 
 
   // fungsi tamppilkan modal hapus
@@ -73,20 +88,13 @@ const AnggotaAdminComponent = () => {
   const onDeleteSuccess = () => {
     setSelectedAnggota(null);
     setIsDeleteModalOpen(false);
-    fetchAllDataAnggota();
+    // Jika hanya ada 1 item di halaman ini dan bukan halaman pertama
+    if (dataAnggota.length === 1 && currentPage > 1) {
+      setCurrentPage(prevPage => prevPage - 1); // Pindah ke halaman sebelumnya
+    } else {
+      fetchAllDataAnggota(); // Refresh data di halaman yang sama
+    }
   }
-
-
-  // pagination anggota
-  const itemsPerPage = 5;
-  const paginatedData = dataAnggota.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-  const totalPages = Math.ceil(dataAnggota.length / itemsPerPage);
-
-  console.log('dataAnggota', dataAnggota);
-
 
 
   // loading
@@ -111,11 +119,11 @@ const AnggotaAdminComponent = () => {
             aria-label='Tabel Kegiatan'
             selectionMode='single'
             bottomContent={
-              dataAnggota.length > 0 && totalPages > 1 && (
+              totalItemsCount > 0 && totalPageCount > 1 && (
                 <div className='flex w-full justify-center py-4'>
                   <Pagination
                     size='sm'
-                    total={totalPages}
+                    total={totalPageCount}
                     page={currentPage}
                     onChange={setCurrentPage}
                     limit={itemsPerPage}
@@ -150,7 +158,7 @@ const AnggotaAdminComponent = () => {
                 ) : null
               }
             >
-              {paginatedData.map((anggota, index) => (
+              {dataAnggota.map((anggota, index) => (
                 <TableRow key={anggota.id || `anggota-${index}`}>
                   <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
                   <TableCell>{anggota.user_id.name}</TableCell>

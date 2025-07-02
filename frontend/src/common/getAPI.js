@@ -71,7 +71,7 @@ const getAPI = {
   },
   getAllAnggota: {
     url: "/api/anggota/get-all-anggota",
-    method: "GET",
+    method: "POST",
   },
   deleteAnggota: {
     url: "/api/anggota/delete-anggota",

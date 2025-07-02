@@ -15,7 +15,7 @@ anggotaRouter.post(
   adminMiddleware,
   createAnggotaController
 );
-anggotaRouter.get("/get-all-anggota", getAllAnggotaController);
+anggotaRouter.post("/get-all-anggota", getAllAnggotaController);
 anggotaRouter.delete(
   "/delete-anggota",
   authMiddleware,
