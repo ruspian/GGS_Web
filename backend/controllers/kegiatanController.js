@@ -1,3 +1,4 @@
+// import GaleriModel from "../models/galeriModel.js";
 import KegiatanModel from "../models/kegiatanModel.js";
 
 // controller buat Kegiatan
@@ -32,6 +33,10 @@ export const createKegiatanController = async (req, res) => {
       image,
     });
     await kegiatan.save();
+
+    // const imageGaleri = await GaleriModel.create({
+    //   image,
+    // });
 
     // jika gagal simpan, kembalikan error
     if (!kegiatan) {
@@ -80,6 +85,14 @@ export const getAllKegiatanController = async (req, res) => {
     // abaikan data sebelum page
     const skip = (page - 1) * limit;
 
+    const image = await KegiatanModel.find({}).select("image");
+
+    // jumlah total gambar
+    const totalImageCount = image.reduce(
+      (acc, curr) => acc + curr.image.length,
+      0
+    );
+
     // ambil data kegiatan dan hitung jumlah kegiatan
     const [data, totalCount] = await Promise.all([
       // akan dimasukkan ke data
@@ -111,6 +124,8 @@ export const getAllKegiatanController = async (req, res) => {
       totalPage: totalPage,
       limit: limit,
       currentPage: page,
+      totalImageCount: totalImageCount,
+      image: image,
     });
   } catch (error) {
     return res.status(500).json({

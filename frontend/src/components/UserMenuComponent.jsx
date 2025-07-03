@@ -68,7 +68,7 @@ const UserMenuComponent = ({ userDetail }) => {
         </DropdownItem>
 
         <DropdownItem
-          onClick={() => navigate(`/admin/dashboard`)}
+          onClick={() => navigate(`/admin/profil`)}
           textValue='Admin'
           key="admin"
           className={`${userDetail.role === "admin" ? "hidden" : ""}`}

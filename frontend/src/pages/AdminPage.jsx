@@ -112,14 +112,14 @@ const AdminPage = () => {
 
               <DrawerBody>
                 <Listbox aria-label="Listbox menu with descriptions" variant="flat">
-                  <ListboxItem
+                  {/* <ListboxItem
                     key="Dashboard"
                     startContent={<MdOutlineSpaceDashboard className='text-emerald-600' />}
                     className='text-lg font-bold h-12'
                     onPress={() => { navigate('/admin/dashboard'); onClose(); }}
                   >
                     Dashboard
-                  </ListboxItem>
+                  </ListboxItem> */}
                   <ListboxItem
                     key="tentang"
                     startContent={<RiFileUserLine className='text-emerald-600' />}

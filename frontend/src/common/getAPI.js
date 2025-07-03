@@ -77,6 +77,10 @@ const getAPI = {
     url: "/api/anggota/delete-anggota",
     method: "DELETE",
   },
+  getGaleri: {
+    url: "/api/galeri/get-galeri",
+    method: "GET",
+  },
 };
 
 export default getAPI;

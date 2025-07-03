@@ -130,12 +130,6 @@ const KegiatanAdminComponent = () => {
     refreshFetchKegiatanData(page, limit); // Panggil fetch dengan halaman baru dan limit dari Redux
   };
 
-  // const itemsPerPage = 5;
-  // const paginatedData = kegiatanData.slice(
-  //   (currentPage - 1) * itemsPerPage,
-  //   currentPage * itemsPerPage
-  // );
-  // const totalPages = Math.ceil(kegiatanData.length / itemsPerPage);
 
   // inisialisasi loading
   const loading = kegiatanStatus === 'loading';

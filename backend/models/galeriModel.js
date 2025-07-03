@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 
 const galeriSchema = new mongoose.Schema(
   {
-    kegiatanId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Kegiatan",
+    image: {
+      type: Array,
+      default: [],
     },
   },
   {

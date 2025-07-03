@@ -10,6 +10,8 @@ const initialState = {
   totalPage: 1,
   currentPage: 1,
   limit: 10,
+  totalImageCount: 0,
+  image: [],
 };
 
 // Thunk untuk Mengambil Semua Data Kegiatan
@@ -34,6 +36,8 @@ export const fetchKegiatanThunk = createAsyncThunk(
           totalPage: response.data.totalPage,
           currentPage: response.data.currentPage,
           limit: response.data.limit,
+          totalImageCount: response.data.totalImageCount,
+          image: response.data.image,
         };
       } else {
         // jika gagal
@@ -166,6 +170,8 @@ const kegiatanSlice = createSlice({
         state.totalCount = action.payload.totalCount;
         state.currentPage = action.payload.currentPage;
         state.limit = action.payload.limit;
+        state.totalImageCount = action.payload.totalImageCount;
+        state.image = action.payload.image;
         state.error = null;
       })
       .addCase(fetchKegiatanThunk.rejected, (state, action) => {

@@ -7,8 +7,6 @@ import { useState } from 'react';
 import FetchFromAxios from '../utils/AxiosUtil';
 import dayjs from 'dayjs';
 import getAPI from '../common/getAPI';
-// import { useDispatch } from 'react-redux';
-// import { addKegiatanThunk } from '../store/kegiatanSliceRedux';
 
 
 const AddKegiatanAdminComponent = ({ isAddModalOpen, handleCancelAdd, onAddSuccess }) => {
@@ -16,7 +14,6 @@ const AddKegiatanAdminComponent = ({ isAddModalOpen, handleCancelAdd, onAddSucce
   const [uploadedImageUrls, setUploadedImageUrls] = useState([]);
 
 
-  // const dispatch = useDispatch();
   const { TextArea } = Input;
 
   const [form] = useForm();
@@ -109,20 +106,6 @@ const AddKegiatanAdminComponent = ({ isAddModalOpen, handleCancelAdd, onAddSucce
 
       addToast({ title: response.data.message, variant: 'success' });
 
-      // panggil thunk redux
-      // const addKegiatanFromThunkRedux = await dispatch(addKegiatanThunk(dataToSend));
-
-      // // jika berhasil
-      // if (addKegiatanThunk.fulfilled.match(addKegiatanFromThunkRedux)) {
-      //   addToast({ title: addKegiatanFromThunkRedux.payload, variant: 'success' });
-      // } else {
-      //   // jika gagal
-      //   const errorMessage = addKegiatanFromThunkRedux.payload || "Gagal menambahkan kegiatan!";
-      //   addToast({ title: errorMessage, variant: 'error' });
-      //   console.log(errorMessage);
-
-      //   return
-      // }
 
       form.resetFields();  // kosokan form setelah sukses
       setFileList([]); // Kosongkan tampilan Upload

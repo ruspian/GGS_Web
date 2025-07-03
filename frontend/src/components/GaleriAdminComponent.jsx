@@ -10,24 +10,34 @@ import 'dayjs/locale/id';
 dayjs.locale('id');
 
 const GaleriAdminComponent = () => {
+
   const kegiatanData = useSelector((state) => state.kegiatan.data);
   const kegiatanStatus = useSelector((state) => state.kegiatan.status);
   const kegiatanError = useSelector((state) => state.kegiatan.error);
+  const currentPage = useSelector((state) => state.kegiatan.currentPage);
+  const limit = useSelector((state) => state.kegiatan.limit);
+  const imageKegiatan = useSelector((state) => state.kegiatan.image);
 
   const dispatch = useDispatch();
 
+
+
+
+
   // Fungsi untuk memuat data galeri
-  const dataGaleriFromKegiatan = useCallback(() => {
-    // Hanya panggil thunk jika statusnya idle atau failed untuk menghindari fetch berulang-ulang
-    if (kegiatanStatus === "idle" || kegiatanStatus === "failed") {
-      dispatch(fetchKegiatanThunk());
-    }
-  }, [dispatch, kegiatanStatus]);
+  const dataGaleriFromKegiatan = useCallback(async (pageToFetch, limitToFetch) => {
+
+    await dispatch(fetchKegiatanThunk({ page: pageToFetch, limit: limitToFetch }));
+  }, [dispatch]);
 
   // Panggil data galeri saat komponen dimuat
   useEffect(() => {
-    dataGaleriFromKegiatan();
-  }, [dataGaleriFromKegiatan]);
+
+    // cek status kegiatan dan isi parameter
+    if (currentPage && limit && (kegiatanStatus === 'idle' || kegiatanStatus === 'failed')) {
+      dataGaleriFromKegiatan(currentPage, limit);
+    };
+  }, [dataGaleriFromKegiatan, currentPage, limit, kegiatanStatus]);
 
   // Tampilkan toast error jika ada error dari Redux
   useEffect(() => {
@@ -40,29 +50,26 @@ const GaleriAdminComponent = () => {
   // Menggabungkan semua gambar dari semua kegiatan menjadi satu daftar datar
   const allGalleryItems = useMemo(() => {
     const images = [];
-    kegiatanData.forEach(kegiatan => {
+    imageKegiatan.forEach(kegiatan => {
       // Pastikan kegiatan.image adalah array sebelum melakukan iterasi
-      if (kegiatan.image && Array.isArray(kegiatan.image)) {
+      if (imageKegiatan) {
         kegiatan.image.forEach((imageUrl, index) => {
 
           // Tambahkan gambar ke daftar
           images.push({
             key: `${kegiatan._id}-${index}`,
             src: imageUrl,
-            alt: kegiatan.name || 'Foto Kegiatan',
-            activityName: kegiatan.name,
-            activityDate: kegiatan.date,
           });
         });
       }
     });
 
-    // dispatch gambar ke redux
-    // dispatch(setGaleri(images));
 
     // kembalikan daftar gambar
     return images;
-  }, [kegiatanData, dispatch]);
+  }, [imageKegiatan]);
+
+
 
   // Tampilkan loading state
   if (kegiatanStatus === 'loading') {
@@ -125,7 +132,7 @@ const GaleriAdminComponent = () => {
                 <div className='rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-transform transform hover:scale-105 duration-300 w-40 h-40'>
                   <div className='relative w-full h-full '>
                     <Image
-                      alt={item.alt}
+                      alt={item.src}
                       src={item.src}
                       className="inset-0 w-full h-full object-fill rounded-lg"
                       fallback="https://placehold.co/600x450/cccccc/000000?text=No+Image" // Placeholder jika gambar gagal dimuat
