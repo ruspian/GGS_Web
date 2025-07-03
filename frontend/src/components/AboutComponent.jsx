@@ -13,12 +13,6 @@ const AboutComponent = () => {
   const aboutStatus = useSelector((state) => state.about.status);
   const aboutError = useSelector((state) => state.about.error);
 
-  console.log('aboutData', aboutData);
-  console.log('aboutStatus', aboutStatus);
-  console.log('aboutError', aboutError);
-
-
-
 
   const fetchAboutData = useCallback(async () => {
     await dispatch(fetchAboutThunk());

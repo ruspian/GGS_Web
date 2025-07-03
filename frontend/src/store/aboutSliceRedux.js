@@ -18,8 +18,6 @@ export const fetchAboutThunk = createAsyncThunk(
         ...getAPI.getAbout,
       });
 
-      console.log("response", response);
-
       // jika berhasil
       if (response.data.success) {
         return {
