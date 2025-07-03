@@ -15,6 +15,7 @@ import KegiatanAdminComponent from "../components/KegiatanAdminComponent";
 import AnggotaAdminComponent from "../components/AnggotaAdminComponent";
 import GaleriAdminComponent from "../components/GaleriAdminComponent";
 import UserAdminComponent from "../components/UserAdminComponent";
+import AboutPage from "../pages/AboutPage";
 
 
 const router = createBrowserRouter([
@@ -38,6 +39,11 @@ const router = createBrowserRouter([
         path: 'anggota',
         element: <AnggotaPage />
       },
+      {
+        path: 'tentang',
+        element: <AboutPage />
+      },
+
 
       {
         path: 'dashboard',

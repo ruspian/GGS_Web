@@ -1,46 +1,76 @@
-import { createSlice } from "@reduxjs/toolkit";
-import dayjs from "dayjs";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import FetchFromAxios from "../utils/AxiosUtil";
+import getAPI from "../common/getAPI";
 
 const initialValue = {
-  _id: null,
-  name: "",
-  about: "",
-  visi: "",
-  misi: [],
-  logo: null,
-  tanggal: null,
+  data: [],
+  status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+  error: null,
 };
+
+// Thunk untuk Mengambil Semua Data Kegiatan
+export const fetchAboutThunk = createAsyncThunk(
+  "about/fetchAboutThunk",
+  async (_, { rejectWithValue }) => {
+    try {
+      // kirim request ke backend
+      const response = await FetchFromAxios({
+        ...getAPI.getAbout,
+      });
+
+      console.log("response", response);
+
+      // jika berhasil
+      if (response.data.success) {
+        return {
+          data: response.data.data,
+        };
+      } else {
+        // jika gagal
+        return rejectWithValue(
+          response.data.message || "Gagal mengambil data."
+        );
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Kesalahan koneksi atau server."
+      );
+    }
+  }
+);
 
 const aboutSlice = createSlice({
   name: "about",
   initialState: initialValue,
   reducers: {
     setAbout: (state, action) => {
-      const payloadToStore = { ...action.payload };
-      // Gunakan dayjs.isDayjs() untuk memastikan itu objek dayjs sebelum konversi
-      if (payloadToStore.tanggal && dayjs.isDayjs(payloadToStore.tanggal)) {
-        payloadToStore.tanggal = payloadToStore.tanggal.toISOString();
-      }
-      // Jika tanggal sudah string atau null, biarkan saja.
-      return { ...state, ...payloadToStore };
+      state.data = action.payload;
     },
 
     editAbout: (state, action) => {
-      if (action.payload._id !== undefined) state._id = action.payload._id;
-      if (action.payload.name !== undefined) state.name = action.payload.name;
-      if (action.payload.about !== undefined)
-        state.about = action.payload.about;
-      if (action.payload.visi !== undefined) state.visi = action.payload.visi;
-      if (action.payload.misi !== undefined) state.misi = action.payload.misi;
-      if (action.payload.logo !== undefined) state.logo = action.payload.logo;
-
-      // Gunakan dayjs.isDayjs() untuk memastikan itu objek dayjs sebelum konversi
-      if (action.payload.tanggal !== undefined) {
-        state.tanggal = dayjs.isDayjs(action.payload.tanggal)
-          ? action.payload.tanggal.toISOString()
-          : action.payload.tanggal; // Jika sudah string atau null, gunakan langsung
-      }
+      const editedAbout = action.payload;
+      state.data = state.data.map((about) => {
+        about._id === editedAbout._id ? editedAbout : about;
+      });
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      // --- fetchKegiatan ---
+      .addCase(fetchAboutThunk.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(fetchAboutThunk.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.data = action.payload.data; // Mengisi data dari hasil fetch
+        state.error = null;
+      })
+      .addCase(fetchAboutThunk.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+        state.data = []; // Kosongkan data jika gagal memuat
+      });
   },
 });
 
