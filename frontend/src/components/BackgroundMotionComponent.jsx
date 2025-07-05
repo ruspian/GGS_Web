@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'motion/react'
-import buble from '../assets/buble.png';
+import buble from '../assets/Buble.png';
 import bubleKotak from '../assets/bubleKotak.png';
 
 
