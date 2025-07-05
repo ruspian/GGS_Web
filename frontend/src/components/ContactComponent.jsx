@@ -6,7 +6,6 @@ import { MdOutlineAttachEmail, MdPhoneInTalk } from "react-icons/md";
 import { motion } from 'framer-motion'; // Import motion
 
 // Assuming you have these assets in your '../assets/' directory
-import buble from '../assets/buble.png';
 import bubleKotak from '../assets/bubleKotak.png';
 
 const ContactComponent = () => {
@@ -46,7 +45,7 @@ const ContactComponent = () => {
     >
       {/* awal animasi bg */}
       <motion.img
-        src={buble}
+        src={bubleKotak}
         alt="Animasi2"
         className='absolute top-10 left-0 w-48 h-48 md:w-64 md:h-64 z-0 opacity-20 mix-blend-multiply blur-lg'
         animate={{ x: [0, 20, 0], y: [0, -20, 0], rotate: [0, 360, 0] }}
