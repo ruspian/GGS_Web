@@ -54,3 +54,5 @@ databaseConnect()
   .catch((err) => {
     console.error("Koneksi Database Gagal Fatal:", err);
   });
+
+export default app;
