@@ -1,6 +1,5 @@
 import React from 'react'
 import { motion } from 'motion/react'
-import buble from '../assets/Buble.png';
 import bubleKotak from '../assets/bubleKotak.png';
 
 
@@ -9,7 +8,7 @@ const BackgroundMotionComponent = () => {
     <>
       {/* --- Animated Background Ornaments --- */}
       <motion.img
-        src={buble}
+        src={bubleKotak}
         alt="Animated bubble decoration"
         className='absolute top-0 left-0 w-48 h-48 md:w-64 md:h-64 z-0 opacity-20 mix-blend-multiply blur-lg'
         animate={{ x: [0, 20, 0], y: [0, -20, 0], rotate: [0, 360, 0] }}
