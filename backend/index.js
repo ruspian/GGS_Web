@@ -43,16 +43,16 @@ app.use("/api/anggota", anggotaRouter);
 app.use("/api/galeri", galeriRouter);
 
 // jalankan servet
-databaseConnect()
-  .then(() => {
-    app.listen(process.env.BACKEND_PORT, () => {
-      console.log(
-        `Server running on http://localhost:${process.env.BACKEND_PORT}`
-      );
-    });
-  })
-  .catch((err) => {
-    console.error("Koneksi Database Gagal Fatal:", err);
-  });
+databaseConnect();
+// .then(() => {
+//   app.listen(process.env.BACKEND_PORT, () => {
+//     console.log(
+//       `Server running on http://localhost:${process.env.BACKEND_PORT}`
+//     );
+//   });
+// })
+// .catch((err) => {
+//   console.error("Koneksi Database Gagal Fatal:", err);
+// });
 
 export default app;
