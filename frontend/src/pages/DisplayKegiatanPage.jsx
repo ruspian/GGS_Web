@@ -4,7 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { fetchKegiatanByIdThunk } from '../store/kegiatanSliceRedux';
 import { Breadcrumb, Button, Carousel, Form, Image, Input } from 'antd';
 import dayjs from 'dayjs';
-import { FaRegCommentDots } from 'react-icons/fa';
+import { FaRegCommentDots, FaRegEye } from 'react-icons/fa';
 import { BiDislike, BiLike } from 'react-icons/bi';
 import TextArea from 'antd/es/input/TextArea';
 
@@ -88,6 +88,11 @@ const DisplayKegiatanPage = () => {
 
         {/* komentar kegiatan */}
         <div className='flex justify-end px-4 gap-4'>
+          <small className='flex gap-2'>
+            <FaRegEye size={20} />
+            {selectedKegiatanRedux?.read}
+          </small>
+
           <small className='flex gap-2'>
             <FaRegCommentDots size={20} />
             {selectedKegiatanRedux?.comment}

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const kegiatanSchema = new mongoose.Schema(
   {
@@ -26,9 +26,17 @@ const kegiatanSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    read: {
+      type: Number,
+      default: 0,
+    },
     comment: {
       type: Number,
       default: 0,
+    },
+    commentId: {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
     },
   },
   {

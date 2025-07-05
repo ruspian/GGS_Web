@@ -89,6 +89,11 @@ const userShema = new mongoose.Schema(
       enum: ["Admin", "User"],
       default: "User",
     },
+    commentId: {
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "Comment",
+      dafault: [],
+    },
   },
   {
     timestamps: true,
