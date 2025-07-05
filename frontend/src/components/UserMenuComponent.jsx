@@ -11,6 +11,7 @@ const UserMenuComponent = ({ userDetail }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+
   // Fungsi handle Logout
   const handleLogout = async () => {
     try {
@@ -67,14 +68,17 @@ const UserMenuComponent = ({ userDetail }) => {
           Dashboard
         </DropdownItem>
 
-        <DropdownItem
-          onClick={() => navigate(`/admin/profil`)}
-          textValue='Admin'
-          key="admin"
-          className={`${userDetail.role === "admin" ? "hidden" : ""}`}
-        >
-          Admin
-        </DropdownItem>
+        {
+          userDetail.role === "Admin" && (
+            <DropdownItem
+              onClick={() => navigate(`/admin/profil`)}
+              textValue='Admin'
+              key="admin"
+            >
+              Admin
+            </DropdownItem>
+          )
+        }
 
         <DropdownItem
           onClick={handleLogout}

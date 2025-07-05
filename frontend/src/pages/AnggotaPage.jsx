@@ -1,101 +1,53 @@
-import React, { useState, useMemo } from 'react';
-import { Button, Card, CardBody, CardFooter, CardHeader, Image, Pagination } from '@heroui/react';
+import React, { useCallback, useEffect } from 'react';
+import { addToast, Button, Card, CardBody, CardFooter, CardHeader, Image, Pagination } from '@heroui/react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaFacebook, FaInstagram, FaTiktok, FaTwitter, FaWhatsapp } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAnggotaThunk, setCurrentPage } from '../store/anggotaSliceRedux';
+import { Tooltip } from 'antd';
 
-const allActivities = [
-
-  {
-    id: 1,
-    nama: "Otong Surotong",
-    profesi: "COE Grub Jamal",
-    img: "https://images.unsplash.com/photo-1540569014015-19a7be504e3a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTUxfHxwZW9wbGV8ZW58MHx8MHx8fDA%3D"
-  },
-  {
-    id: 2,
-    nama: "Ucup Surucup",
-    profesi: "Ketua Organisasi Naga",
-    img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTEwfHxwZW9wbGV8ZW58MHx8MHx8fDA%3D"
-  },
-  {
-    id: 3,
-    nama: "Santi Susanti",
-    profesi: "COE Grub Laguna",
-    img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTU1fHxwZW9wbGV8ZW58MHx8MHx8fDA%3D"
-  },
-  {
-    id: 4,
-    nama: "Sari Sunari",
-    profesi: "COE Grub Sari",
-    img: "https://images.unsplash.com/photo-1592621385612-4d7129426394?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTQzfHxwZW9wbGV8ZW58MHx8MHx8fDA%3D"
-  },
-  {
-    id: 5,
-    nama: "Otong Surotong",
-    profesi: "COE Grub Jamal",
-    img: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTV8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D"
-  },
-  {
-    id: 6,
-    nama: "Otong Surotong",
-    profesi: "COE Grub Jamal",
-    img: "https://plus.unsplash.com/premium_photo-1681880949962-44fd8757cf53?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nzd8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D"
-  },
-  {
-    id: 7,
-    nama: "Otong Surotong",
-    profesi: "COE Grub Jamal",
-    img: "https://images.unsplash.com/photo-1521119989659-a83eee488004?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODB8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D"
-  },
-  {
-    id: 8,
-    nama: "Otong Surotong",
-    profesi: "COE Grub Jamal",
-    img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTF8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D"
-  },
-  {
-    id: 9,
-    nama: "Otong Surotong",
-    profesi: "COE Grub Jamal",
-    img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTB8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D"
-  },
-  {
-    id: 10,
-    nama: "Otong Surotong",
-    profesi: "COE Grub Jamal",
-    img: "https://images.unsplash.com/photo-1522556189639-b150ed9c4330?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDJ8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D"
-  },
-  {
-    id: 11,
-    nama: "Otong Surotong",
-    profesi: "COE Grub Jamal",
-    img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzh8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D"
-  },
-  {
-    id: 12,
-    nama: "Otong Surotong",
-    profesi: "COE Grub Jamal",
-    img: "https://plus.unsplash.com/premium_photo-1671656349322-41de944d259b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzN8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D"
-  },
-];
-
-const ITEMS_PER_PAGE = 6; // Menampilkan 6 card per halaman
 
 const AnggotaPage = () => {
-  const [currentPage, setCurrentPage] = useState(1);
 
-  // Hitung total halaman
-  const totalPages = useMemo(() => Math.ceil(allActivities.length / ITEMS_PER_PAGE), [allActivities.length]);
+  const dispatch = useDispatch();
 
-  // Hitung indeks awal dan akhir untuk item yang akan ditampilkan di halaman saat ini
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const activitiesToDisplay = allActivities.slice(startIndex, endIndex);
+  const dataAnggota = useSelector((state) => state.anggota.data);
+  const anggotaStatus = useSelector((state) => state.anggota.status);
+  const anggotaError = useSelector((state) => state.anggota.error);
+  const limit = useSelector((state) => state.anggota.limit);
+  const currentPage = useSelector((state) => state.anggota.currentPage);
+  const totalPage = useSelector((state) => state.anggota.totalPage);
+
+
+  // fungsi ambil semua data anggota dari redux
+  const fetchAllDataAnggota = useCallback(async (pageToFetch, limitToFetch) => {
+
+    await dispatch(fetchAnggotaThunk({ page: pageToFetch, limit: limitToFetch }));
+  }, [dispatch]);
+
+
+  // panggil fungsi ambil semua data anggota saat komponen dimuat
+  useEffect(() => {
+
+    // cek redux
+    if (currentPage && limit && (anggotaStatus === "idle" || anggotaStatus === "failed")) {
+      fetchAllDataAnggota(currentPage, limit);
+    }
+  }, [currentPage, limit, anggotaStatus, fetchAllDataAnggota]);
+
+  // tampilkan error jika gagal ambil data anggota
+  useEffect(() => {
+    if (anggotaError && anggotaStatus === "failed") {
+      addToast({ title: `Error: ${anggotaError}`, variant: 'error' });
+    }
+  })
+
 
   // Handler untuk mengubah halaman
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    dispatch(setCurrentPage(pageNumber));
+    fetchAllDataAnggota(pageNumber, limit);
   };
 
   // animasi untuk kontainer kartu
@@ -132,7 +84,7 @@ const AnggotaPage = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
         >
-          <h1 className='text-3xl font-bold text-emerald-600 '>Kegiatan</h1>
+          <h1 className='text-3xl font-bold text-emerald-600 '>Anggota</h1>
           <hr className='text-emerald-600 w-full border mt-4' />
         </motion.div>
 
@@ -147,36 +99,48 @@ const AnggotaPage = () => {
             animate="visible"
             exit="exit"
           >
-            {activitiesToDisplay.map((activity) => (
+            {dataAnggota && dataAnggota.map((anggota, index) => (
               <motion.div
-                key={activity.id}
+                key={anggota.user_id._id + index}
                 className="col-span-1"
                 variants={cardVariants}
 
               >
-                <Card className="py-4 h-full flex flex-col">
+                <Card className="py-4 w-full h-full flex flex-col">
                   <CardHeader className="flex items-start w-full justify-between">
                     <div>
-                      <h4 className="font-bold text-md">{activity.nama}</h4>
-                      <small className='text-gray-500 line-clamp-1'>{activity.profesi}</small>
+                      <h4 className="font-bold text-md">{anggota.user_id.name}</h4>
+                      <small className='text-gray-500 line-clamp-1'>{anggota.user_id.email}</small>
                     </div>
                     <Button variant='bordered' size='sm' color='success'>Profil</Button>
                   </CardHeader>
-                  <CardBody className="overflow-hidden w-full h-[400px] py-2">
-                    <div className='w-full h-full object-cover'>
-                      <Image
-                        src={activity.img}
-                        alt="Foto Otong Surotong"
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
+                  <CardBody className="overflow-hidden items-center justify-center w-full h-[400px] py-2">
+                    <Image
+                      src={anggota.user_id.avatar}
+                      alt={`Foto ${anggota.user_id.name}`}
+                      className="object-cover w-[400px] h-[400px] bg-emerald-500"
+                    />
                   </CardBody>
                   <CardFooter className='flex gap-4 items-center justify-center '>
-                    <FaFacebook size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    <FaWhatsapp size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    <FaInstagram size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    <FaTwitter size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    <FaTiktok size={20} className='hover:text-emerald-600 cursor-pointer' />
+                    <Tooltip title={anggota.user_id.social_media.facebook || 'Belum ada'} placement='bottom'>
+                      <FaFacebook size={20} className='hover:text-emerald-600 cursor-pointer' />
+                    </Tooltip>
+
+                    <Tooltip title={anggota.user_id.social_media.whatsapp || 'Belum ada'} placement='bottom'>
+                      <FaWhatsapp size={20} className='hover:text-emerald-600 cursor-pointer' />
+                    </Tooltip>
+
+                    <Tooltip title={anggota.user_id.social_media.instagram || 'Belum ada'} placement='bottom'>
+                      <FaInstagram size={20} className='hover:text-emerald-600 cursor-pointer' />
+                    </Tooltip>
+
+                    <Tooltip title={anggota.user_id.social_media.twitter || 'Belum ada'} placement='bottom'>
+                      <FaTwitter size={20} className='hover:text-emerald-600 cursor-pointer' />
+                    </Tooltip>
+
+                    <Tooltip title={anggota.user_id.social_media.tiktok || 'Belum ada'} placement='bottom'>
+                      <FaTiktok size={20} className='hover:text-emerald-600 cursor-pointer' />
+                    </Tooltip>
                   </CardFooter>
                 </Card>
               </motion.div>
@@ -195,10 +159,11 @@ const AnggotaPage = () => {
           <Pagination
             showShadow
             color="success"
-            total={totalPages}
+            total={totalPage}
             size='md'
             page={currentPage}
             onChange={handlePageChange}
+            limit={limit}
           />
         </motion.div>
       </div>

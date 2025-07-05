@@ -5,14 +5,11 @@ import getAPI from '../common/getAPI';
 import FetchFromAxios from '../utils/AxiosUtil';
 import { addToast } from '@heroui/toast';
 import dayjs from 'dayjs';
-import { useDispatch } from 'react-redux';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { editAbout } from '../store/aboutSliceRedux'; // Pastikan action editAbout sudah benar
 
 const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, handleCancelEdit, initialValues, onEditSuccess }) => {
   const { TextArea } = Input;
 
-  const dispatch = useDispatch();
 
   // Inisialisasi hook form dari Ant Design
   const [form] = useForm();
@@ -78,7 +75,7 @@ const EditProfilAdminModalComponent = ({ isModalOpenEdit, setIsModalOpenEdit, ha
       }
 
 
-      dispatch(editAbout(serializableResponseData)); // Dispatch data yang sudah serializable
+      // dispatch(editAbout(serializableResponseData)); 
 
       setIsModalOpenEdit(false);
       form.resetFields();

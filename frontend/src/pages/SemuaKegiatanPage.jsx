@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchKegiatanThunk, setCurrentPage } from '../store/kegiatanSliceRedux';
 import { Empty } from 'antd';
+import dayjs from 'dayjs';
+dayjs.locale('id');
 
 
 const SemuaKegiatanComponent = () => {
@@ -120,7 +122,7 @@ const SemuaKegiatanComponent = () => {
 
                 >
                   <Card className="py-4 h-full flex flex-col">
-                    <CardBody className="overflow-hidden w-full h-[200px] py-2">
+                    <CardBody className="overflow-hidden items-center justify-center w-full h-[200px] py-2">
                       <Image
                         alt={kegiatan.name}
                         className="object-cover w-full h-full"
@@ -133,6 +135,9 @@ const SemuaKegiatanComponent = () => {
                       />
                     </CardBody>
                     <CardFooter className="pb-0 pt-2 px-4 flex-col items-start">
+                      <small className="text-default-500 mb-2">
+                        {dayjs(kegiatan.date).format('dddd, DD MMMM YYYY')}
+                      </small>
                       <h4 className="font-bold text-large">{kegiatan.name}</h4>
                       <small className="text-default-500 line-clamp-2">{kegiatan.description}</small>
                     </CardFooter>

@@ -45,7 +45,7 @@ const AboutComponent = () => {
 
         <div>
           <Image
-            alt="HeroUI hero Image"
+            alt={`aboutImage-${aboutImage}`}
             src={aboutImage}
             className="w-full h-full object-cover rounded-md animate-float1"
           />

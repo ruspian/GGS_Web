@@ -1,10 +1,47 @@
-import { Button, Card, CardBody, CardFooter, CardHeader, Image } from '@heroui/react';
-import React from 'react';
+import { addToast, Button, Card, CardBody, CardFooter, CardHeader, Image } from '@heroui/react';
+import React, { useCallback, useEffect } from 'react';
 import { FaFacebook, FaWhatsapp, FaInstagram, FaTwitter, FaTiktok } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAnggotaThunk } from '../store/anggotaSliceRedux';
+import { Tooltip } from 'antd';
 
 const AnggotaComponent = () => {
+
+  const dispatch = useDispatch();
+
+  const dataAnggota = useSelector((state) => state.anggota.data);
+  const anggotaStatus = useSelector((state) => state.anggota.status);
+  const anggotaError = useSelector((state) => state.anggota.error);
+  const limit = useSelector((state) => state.anggota.limit);
+  const currentPage = useSelector((state) => state.anggota.currentPage);
+
+
+  // fungsi ambil semua data anggota dari redux
+  const fetchAllDataAnggota = useCallback(async (pageToFetch, limitToFetch) => {
+
+    await dispatch(fetchAnggotaThunk({ page: pageToFetch, limit: limitToFetch }));
+  }, [dispatch]);
+
+
+  // panggil fungsi ambil semua data anggota saat komponen dimuat
+  useEffect(() => {
+
+    // cek redux
+    if (currentPage && limit && (anggotaStatus === "idle" || anggotaStatus === "failed")) {
+      fetchAllDataAnggota(currentPage, limit);
+    }
+  }, [currentPage, limit, anggotaStatus, fetchAllDataAnggota]);
+
+  // tampilkan error jika gagal ambil data anggota
+  useEffect(() => {
+    if (anggotaError && anggotaStatus === "failed") {
+      addToast({ title: `Error: ${anggotaError}`, variant: 'error' });
+    }
+  })
+
+
   // Variants untuk animasi kontainer kartu 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -55,114 +92,56 @@ const AnggotaComponent = () => {
           viewport={{ once: false, amount: 0.3 }}
         >
 
+          {
+            // card anggota
+            dataAnggota && dataAnggota.slice(0, 4).map((anggota, index) => (
+              <motion.div
+                key={index + anggota.user_id._id}
+                variants={cardVariants}
+                className="py-2 max-w-xs max-h-xs "
+              >
+                <Card>
+                  <CardHeader className="flex items-start w-full h-16 justify-between">
+                    <div>
+                      <h4 className="font-bold text-md">{anggota.user_id.name}</h4>
+                      <small className='text-gray-500 line-clamp-1'>{anggota.user_id.email}</small>
+                    </div>
+                    <Button variant='bordered' size='sm' color='success'>Profil</Button>
+                  </CardHeader>
+                  <CardBody className="w-full h-64 overflow-hidden my-2">
+                    <Image
+                      src={anggota.user_id.avatar}
+                      alt={`Foto ${anggota.user_id.name}`}
+                      className="object-cover w-full h-full rounded-md"
+                    />
+                  </CardBody>
+                  <CardFooter className='flex gap-4 items-center justify-center '>
+                    <Tooltip title={anggota.user_id.social_media.facebook || 'Belum ada'} placement='bottom'>
+                      <FaFacebook size={20} className='hover:text-emerald-600 cursor-pointer' />
+                    </Tooltip>
 
-          {/* card 1 */}
-          <motion.div variants={cardVariants} className="py-2 max-w-xs max-h-xs ">
-            <Card>
-              <CardHeader className="flex items-start w-full h-24 justify-between">
-                <div>
-                  <h4 className="font-bold text-md">Otong Surotong</h4>
-                  <small className='text-gray-500 line-clamp-1'>CEO Grub Jamal</small>
-                </div>
-                <Button variant='bordered' size='sm' color='success'>Profil</Button>
-              </CardHeader>
-              <CardBody className="w-full h-64 overflow-hidden my-2">
-                <Image
-                  src="https://plus.unsplash.com/premium_photo-1669703777437-27602d656c27?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D"
-                  alt="Foto Otong Surotong"
-                  className="object-cover w-full h-full rounded-md"
-                />
-              </CardBody>
-              <CardFooter className='flex gap-4 items-center justify-center '>
-                <FaFacebook size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaWhatsapp size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaInstagram size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaTwitter size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaTiktok size={20} className='hover:text-emerald-600 cursor-pointer' />
-              </CardFooter>
-            </Card>
-          </motion.div>
+                    <Tooltip title={anggota.user_id.social_media.whatsapp || 'Belum ada'} placement='bottom'>
+                      <FaWhatsapp size={20} className='hover:text-emerald-600 cursor-pointer' />
+                    </Tooltip>
 
-          {/* card 2 */}
-          <motion.div variants={cardVariants} className="py-2 max-w-xs max-h-xs">
-            <Card>
-              <CardHeader className="flex items-start w-full h-24 justify-between">
-                <div>
-                  <h4 className="font-bold text-md">Ucup Surucup</h4>
-                  <small className='text-gray-500 line-clamp-1'>Ketua Organisasi Naga</small>
-                </div>
-                <Button variant='bordered' size='sm' color='success'>Profil</Button>
-              </CardHeader>
-              <CardBody className="w-full h-64 overflow-hidden my-2">
-                <Image
-                  src="https://images.unsplash.com/photo-1488161628813-04466f872be2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHBlb3BsZXxlbnwwfHwwfHx8MA%3D%3D"
-                  alt="Foto Otong Surotong"
-                  className="object-cover w-full h-full  rounded-md"
-                />
-              </CardBody>
-              <CardFooter className='flex gap-4 items-center justify-center '>
-                <FaFacebook size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaWhatsapp size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaInstagram size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaTwitter size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaTiktok size={20} className='hover:text-emerald-600 cursor-pointer' />
-              </CardFooter>
-            </Card>
-          </motion.div>
+                    <Tooltip title={anggota.user_id.social_media.instagram || 'Belum ada'} placement='bottom'>
+                      <FaInstagram size={20} className='hover:text-emerald-600 cursor-pointer' />
+                    </Tooltip>
 
-          {/* card 3 */}
-          <motion.div variants={cardVariants} className="py-2 max-w-xs max-h-xs">
-            <Card>
-              <CardHeader className="flex items-start w-full h-24 justify-between">
-                <div>
-                  <h4 className="font-bold text-md">Santi Susanti</h4>
-                  <small className='text-gray-500 line-clamp-1'>CEO Grub Laguna</small>
-                </div>
-                <Button variant='bordered' size='sm' color='success'>Profil</Button>
-              </CardHeader>
-              <CardBody className="w-full  h-64 overflow-hidden my-2">
-                <Image
-                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cGVvcGxlfGVufDB8fDB8fHww"
-                  alt="Foto Otong Surotong"
-                  className="object-fill w-full h-full rounded-md"
-                />
-              </CardBody>
-              <CardFooter className='flex gap-4 items-center justify-center '>
-                <FaFacebook size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaWhatsapp size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaInstagram size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaTwitter size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaTiktok size={20} className='hover:text-emerald-600 cursor-pointer' />
-              </CardFooter>
-            </Card>
-          </motion.div>
+                    <Tooltip title={anggota.user_id.social_media.twitter || 'Belum ada'} placement='bottom'>
+                      <FaTwitter size={20} className='hover:text-emerald-600 cursor-pointer' />
+                    </Tooltip>
 
-          {/* card 4 */}
-          <motion.div variants={cardVariants} className="py-2 max-w-xs max-h-xs">
-            <Card>
-              <CardHeader className="flex items-start w-full h-24 justify-between">
-                <div>
-                  <h4 className="font-bold text-md">Sari Sunari</h4>
-                  <small className='text-gray-500 line-clamp-1'>CEO Grub Sari</small>
-                </div>
-                <Button variant='bordered' size='sm' color='success'>Profil</Button>
-              </CardHeader>
-              <CardBody className="w-full h-64 overflow-hidden my-2">
-                <Image
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cGVvcGxlfGVufDB8fDB8fHww"
-                  alt="Foto Otong Surotong"
-                  className="object-fill w-full h-full rounded-md"
-                />
-              </CardBody>
-              <CardFooter className='flex gap-4 items-center justify-center '>
-                <FaFacebook size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaWhatsapp size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaInstagram size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaTwitter size={20} className='hover:text-emerald-600 cursor-pointer' />
-                <FaTiktok size={20} className='hover:text-emerald-600 cursor-pointer' />
-              </CardFooter>
-            </Card>
-          </motion.div>
+                    <Tooltip title={anggota.user_id.social_media.tiktok || 'Belum ada'} placement='bottom'>
+                      <FaTiktok size={20} className='hover:text-emerald-600 cursor-pointer' />
+                    </Tooltip>
+
+                  </CardFooter>
+                </Card>
+              </motion.div>
+
+            ))
+          }
 
         </motion.div>
 

@@ -85,7 +85,8 @@ export const getAllAnggotaController = async (req, res) => {
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .populate("user_id"),
+        .populate("user_id")
+        .select("-password -refresh_token"),
 
       // hitung jumlah anggota
       AnggotaModel.countDocuments({}),
@@ -113,7 +114,6 @@ export const getAllAnggotaController = async (req, res) => {
       currentPage: page,
       limit: limit,
       data: data,
-      skip: skip,
     });
   } catch (error) {
     console.log(error);

@@ -222,7 +222,7 @@ const KegiatanAdminComponent = () => {
                     <TableCell>{(currentPage - 1) * limit + index + 1}</TableCell>
                     <TableCell>{kegiatan.name}</TableCell>
                     <TableCell>{kegiatan.date ? dayjs(kegiatan.date).format('dddd, DD-MM-YYYY') : 'N/A'}</TableCell>
-                    <TableCell className='line-clamp-6 md:line-clamp-none max-w-xs text-sm text-wrap'>
+                    <TableCell className='line-clamp-6 text-start max-w-xs text-sm text-wrap'>
                       {kegiatan.description}
                     </TableCell>
                     <TableCell>

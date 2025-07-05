@@ -12,6 +12,7 @@ const initialState = {
   limit: 10,
   totalImageCount: 0,
   image: [],
+  selectedKegiatan: null,
 };
 
 // Thunk untuk Mengambil Semua Data Kegiatan
@@ -38,6 +39,38 @@ export const fetchKegiatanThunk = createAsyncThunk(
           limit: response.data.limit,
           totalImageCount: response.data.totalImageCount,
           image: response.data.image,
+        };
+      } else {
+        // jika gagal
+        return rejectWithValue(
+          response.data.message || "Gagal memuat data kegiatan."
+        );
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Kesalahan koneksi atau server."
+      );
+    }
+  }
+);
+
+// Thunk untuk Mengambil Semua Data Kegiatan
+export const fetchKegiatanByIdThunk = createAsyncThunk(
+  "kegiatan/fetchKegiatanByIdThunk",
+  async (_id, { rejectWithValue }) => {
+    try {
+      // kirim request ke backend
+      const response = await FetchFromAxios({
+        ...getAPI.getKegiatanById,
+        data: {
+          _id,
+        },
+      });
+
+      // jika berhasil
+      if (response.data.success) {
+        return {
+          selectedKegiatan: response.data.data,
         };
       } else {
         // jika gagal
@@ -155,6 +188,9 @@ const kegiatanSlice = createSlice({
     setCurrentPage: (state, action) => {
       state.currentPage = action.payload;
     },
+    setSelectedKegiatan: (state, action) => {
+      state.selectedKegiatan = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -178,6 +214,21 @@ const kegiatanSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
         state.data = []; // Kosongkan data jika gagal memuat
+      })
+      // --- fetchKegiatanById ---
+      .addCase(fetchKegiatanByIdThunk.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(fetchKegiatanByIdThunk.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.selectedKegiatan = action.payload.selectedKegiatan;
+        state.error = null;
+      })
+      .addCase(fetchKegiatanByIdThunk.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+        state.selectedKegiatan = null; // Kosongkan data jika gagal memuat
       })
       // --- addKegiatan ---
       .addCase(addKegiatanThunk.pending, (state) => {
@@ -237,5 +288,6 @@ export const {
   addKegiatan,
   deleteKegiatan,
   setCurrentPage,
+  setSelectedKegiatan,
 } = kegiatanSlice.actions;
 export default kegiatanSlice.reducer;

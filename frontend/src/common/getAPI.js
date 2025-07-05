@@ -57,6 +57,10 @@ const getAPI = {
     url: "/api/kegiatan/get-kegiatan",
     method: "POST",
   },
+  getKegiatanById: {
+    url: "/api/kegiatan/get-kegiatan-by-id",
+    method: "POST",
+  },
   editKegiatan: {
     url: "/api/kegiatan/edit-kegiatan",
     method: "PUT",

@@ -4,6 +4,7 @@ import {
   deleteKegiatanController,
   editKegiatanController,
   getAllKegiatanController,
+  getKegiatanByIdController,
 } from "../controllers/kegiatanController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 import { adminMiddleware } from "../middlewares/adminMiddleware.js";
@@ -17,6 +18,7 @@ kegiatanRouter.post(
   createKegiatanController
 );
 kegiatanRouter.post("/get-kegiatan", getAllKegiatanController);
+kegiatanRouter.post("/get-kegiatan-by-id", getKegiatanByIdController);
 kegiatanRouter.put(
   "/edit-kegiatan",
   authMiddleware,

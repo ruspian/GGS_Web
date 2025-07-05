@@ -237,3 +237,36 @@ export const deleteKegiatanController = async (req, res) => {
     });
   }
 };
+
+// controller ambil kegiatan berdasarkan id
+export const getKegiatanByIdController = async (req, res) => {
+  try {
+    const { _id } = req.body;
+
+    // pastikan _id dikirim dari frontend
+    if (!_id) {
+      return res.status(400).json({
+        message: "Kegiatan tidak ditemukan!",
+        success: false,
+        error: true,
+      });
+    }
+
+    // cari kegiatan di database
+    const kegiatanById = await KegiatanModel.findById(_id);
+
+    // jika berhasil
+    return res.status(200).json({
+      message: "Kegiatan berhasil ditemukan!",
+      success: true,
+      error: false,
+      data: kegiatanById,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "Internal Server Error",
+      error: true,
+      success: false,
+    });
+  }
+};

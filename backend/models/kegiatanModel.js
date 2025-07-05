@@ -18,6 +18,18 @@ const kegiatanSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    like: {
+      type: Number,
+      default: 0,
+    },
+    dislike: {
+      type: Number,
+      default: 0,
+    },
+    comment: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

@@ -1,29 +1,78 @@
-import React, { useState } from 'react';
-import { Card, Image, Tooltip, Pagination } from '@heroui/react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Card, Image, Tooltip, Pagination, addToast } from '@heroui/react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchKegiatanThunk } from '../store/kegiatanSliceRedux';
 
 const GaleryComponent = () => {
-  const allImages = [
-    { id: 1, src: "https://plus.unsplash.com/premium_photo-1724129051975-113ea0537676?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB4MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", alt: "Gambar Kegiatan 1" },
-    { id: 2, src: "https://images.unsplash.com/photo-1505471768190-275e2ad7b3f9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB4MHxwaG90by1yZWxhdGVkfDF8fHxlbnwwfHx8fHw%3D", alt: "Gambar Kegiatan 2" },
-    { id: 3, src: "https://images.unsplash.com/photo-1614157606535-2f3990b919a6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGluZG9uZXNpYW58ZW52MHx8MHx8fDA%3D", alt: "Gambar Kegiatan 3" },
-    { id: 4, src: "https://images.unsplash.com/photo-1560190113-6fa325e052d7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGluZG9uZXNpYW58ZW52MHx8MHx8fDA%3D", alt: "Gambar Kegiatan 4" },
-    { id: 5, src: "https://images.unsplash.com/photo-1598063413828-0d42356b9573?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aW5kb25lc2lhfGVufDB8fHwwfHw%3D", alt: "Gambar Kegiatan 5" },
-    { id: 6, src: "https://images.unsplash.com/photo-1620634008561-c1b8b6584aa0?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB4MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", alt: "Gambar Kegiatan 6" },
-    { id: 7, src: "https://images.unsplash.com/photo-1584792323921-5b1a9f1b60ac?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB4MHxwaG90by1yZWxhdGVkfDExfHx8ZW58MHx8fHx8", alt: "Gambar Kegiatan 7" },
-    { id: 8, src: "https://images.unsplash.com/photo-1599717460927-8101594d1418?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB4MHxwaG90by1yZWxhdGVkfDc2fHx8ZW58MHx8fHx8", alt: "Gambar Kegiatan 8" },
-    { id: 9, src: "https://plus.unsplash.com/premium_photo-1693143159435-96b250a9ee2d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB4MHxwaG90by1yZWxhdGVkfDIwNnx8fGVufDB8fHx8fA%3D%3D", alt: "Gambar Kegiatan 9" },
-    { id: 10, src: "https://images.unsplash.com/photo-1596609703724-d5335034ef54?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB4MHxwaG90by1yZWxhdGVkfDIzNnx8fGVufDB8fHx8fA%3D%3D", alt: "Gambar Kegiatan 10" },
-  ];
 
   const [currentPage, setCurrentPage] = useState(1);
+
+  // const kegiatanData = useSelector((state) => state.kegiatan.data);
+  const kegiatanStatus = useSelector((state) => state.kegiatan.status);
+  const kegiatanError = useSelector((state) => state.kegiatan.error);
+  const limit = useSelector((state) => state.kegiatan.limit);
+  const imageKegiatan = useSelector((state) => state.kegiatan.image);
+
+  const dispatch = useDispatch();
+
+
+
+
+
+  // Fungsi untuk memuat data galeri
+  const dataGaleriFromKegiatan = useCallback(async (pageToFetch, limitToFetch) => {
+
+    await dispatch(fetchKegiatanThunk({ page: pageToFetch, limit: limitToFetch }));
+  }, [dispatch]);
+
+  // Panggil data galeri saat komponen dimuat
+  useEffect(() => {
+
+    // cek status kegiatan dan isi parameter
+    if (currentPage && limit && (kegiatanStatus === 'idle' || kegiatanStatus === 'failed')) {
+      dataGaleriFromKegiatan(currentPage, limit);
+    };
+  }, [dataGaleriFromKegiatan, currentPage, limit, kegiatanStatus]);
+
+  // Tampilkan toast error jika ada error dari Redux
+  useEffect(() => {
+    if (kegiatanStatus === 'failed' && kegiatanError) {
+      addToast({ title: `Error: ${kegiatanError}`, variant: 'error' });
+    }
+  }, [kegiatanStatus, kegiatanError]);
+
+
+  // Menggabungkan semua gambar dari semua kegiatan menjadi satu daftar datar
+  const allGalleryItems = useMemo(() => {
+    const images = [];
+    imageKegiatan.forEach(kegiatan => {
+      // Pastikan kegiatan.image adalah array sebelum melakukan iterasi
+      if (imageKegiatan) {
+        kegiatan.image.forEach((imageUrl, index) => {
+
+          // Tambahkan gambar ke daftar
+          images.push({
+            key: `${kegiatan._id}-${index}`,
+            src: imageUrl,
+          });
+        });
+      }
+    });
+
+
+    // kembalikan daftar gambar
+    return images;
+  }, [imageKegiatan]);
+
+
   const imagesPerPage = 5;
 
   const indexOfLastImage = currentPage * imagesPerPage;
   const indexOfFirstImage = indexOfLastImage - imagesPerPage;
-  const currentImages = allImages.slice(indexOfFirstImage, indexOfLastImage);
+  const currentImages = allGalleryItems.slice(indexOfFirstImage, indexOfLastImage);
 
-  const totalPages = Math.ceil(allImages.length / imagesPerPage);
+  const totalPages = Math.ceil(allGalleryItems.length / imagesPerPage);
 
   const cardLayoutClasses = [
     "col-span-12 sm:col-span-4 h-[300px]",
@@ -118,7 +167,7 @@ const GaleryComponent = () => {
             exit="exit"
           >
             {currentImages.map((image, index) => (
-              <motion.div key={image.id} variants={itemVariants} className={cardLayoutClasses[index]}>
+              <motion.div key={`image-${image.src + index}`} id={image.id} variants={itemVariants} className={cardLayoutClasses[index]}>
                 <Tooltip
                   showArrow={true}
                   offset={-7}
@@ -129,7 +178,6 @@ const GaleryComponent = () => {
                   }}
                   content={
                     <div className="px-1 py-2 max-w-56">
-                      <div className="text-small font-bold">{image.alt}</div>
                       <div className="text-tiny line-clamp-3">{image.src}</div>
                     </div>
                   }

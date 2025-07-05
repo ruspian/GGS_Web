@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import {
   Table,
   TableHeader,
@@ -14,63 +14,50 @@ import {
   addToast
 } from "@heroui/react";
 import dayjs from 'dayjs';
-import FetchFromAxios from '../utils/AxiosUtil';
-import getAPI from '../common/getAPI';
 import DeleteAnggotaAdminComponent from './DeleteAnggotaAdminComponent';
-import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAnggotaThunk, setCurrentPage } from '../store/anggotaSliceRedux';
 
 
 
 const AnggotaAdminComponent = () => {
-  const [currentPage, setCurrentPage] = useState(1); // halaman saat ini
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [dataAnggota, setDataAnggota] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [selectedAnggota, setSelectedAnggota] = useState(null);
-  const [totalPageCount, setTotalPageCount] = useState(1); // total halaman dari backend
-  const [totalItemsCount, setTotalItemsCount] = useState(0); // total item dari backend
 
-  // jumlah item per halaman
-  const itemsPerPage = 6;
+  const dispatch = useDispatch();
 
-
-  // fungsi ambil semua data Anggota
-  const fetchAllDataAnggota = useCallback(async () => {
-    try {
-
-
-      setLoading(true);
-      const response = await FetchFromAxios({
-        ...getAPI.getAllAnggota,
-        data: {
-          page: currentPage,
-          limit: itemsPerPage
-        }
-      });
+  // ambil data anggota dari redux
+  const dataAnggota = useSelector((state) => state.anggota.data);
+  const anggotaStatus = useSelector((state) => state.anggota.status);
+  const anggotaError = useSelector((state) => state.anggota.error);
+  const totalPage = useSelector((state) => state.anggota.totalPage);
+  const totalCount = useSelector((state) => state.anggota.totalCount);
+  const limit = useSelector((state) => state.anggota.limit);
+  const currentPage = useSelector((state) => state.anggota.currentPage);
 
 
-      // jika berhasil
-      if (response.data.success) {
-        setDataAnggota(response.data.data);
-        setTotalPageCount(response.data.totalPage);
-        setTotalItemsCount(response.data.totalCount);
+  // fungsi ambil semua data anggota dari redux
+  const fetchAllDataAnggota = useCallback(async (pageToFetch, limitToFetch) => {
 
-      } else {
-        setDataAnggota([]);
-        addToast({ title: response.data.message || "Gagal memuat data anggota.", variant: 'error' });
-      }
-    } catch (error) {
-      setDataAnggota([]);
-      addToast({ title: error.response?.data?.message || "Kesalahan mengambil data anggota.", variant: 'error' });
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage, itemsPerPage]); // muat ulang saat nilai dari depedensi berubah
+    await dispatch(fetchAnggotaThunk({ page: pageToFetch, limit: limitToFetch }));
+  }, [dispatch]);
 
+
+  // panggil fungsi ambil semua data anggota saat komponen dimuat
   useEffect(() => {
-    fetchAllDataAnggota();
-  }, [fetchAllDataAnggota])
 
+    // cek redux
+    if (currentPage && limit && (anggotaStatus === "idle" || anggotaStatus === "failed")) {
+      fetchAllDataAnggota(currentPage, limit);
+    }
+  }, [currentPage, limit, anggotaStatus, fetchAllDataAnggota]);
+
+  // tampilkan error jika gagal ambil data anggota
+  useEffect(() => {
+    if (anggotaError && anggotaStatus === "failed") {
+      addToast({ title: `Error: ${anggotaError}`, variant: 'error' });
+    }
+  })
 
   // fungsi tamppilkan modal hapus
   const showModalDelete = (anggota) => {
@@ -88,13 +75,15 @@ const AnggotaAdminComponent = () => {
   const onDeleteSuccess = () => {
     setSelectedAnggota(null);
     setIsDeleteModalOpen(false);
-    // Jika hanya ada 1 item di halaman ini dan bukan halaman pertama
-    if (dataAnggota.length === 1 && currentPage > 1) {
-      setCurrentPage(prevPage => prevPage - 1); // Pindah ke halaman sebelumnya
-    } else {
-      fetchAllDataAnggota(); // Refresh data di halaman yang sama
-    }
+    fetchAllDataAnggota(currentPage, limit);
   }
+
+  const handleChangePage = (page) => {
+    dispatch(setCurrentPage(page));
+    fetchAllDataAnggota(page, limit);
+  }
+
+  const loading = anggotaStatus === "loading";
 
 
   // loading
@@ -119,14 +108,14 @@ const AnggotaAdminComponent = () => {
             aria-label='Tabel Kegiatan'
             selectionMode='single'
             bottomContent={
-              totalItemsCount > 0 && totalPageCount > 1 && (
+              totalCount > 0 && totalPage > 1 && (
                 <div className='flex w-full justify-center py-4'>
                   <Pagination
                     size='sm'
-                    total={totalPageCount}
+                    total={totalPage}
                     page={currentPage}
-                    onChange={setCurrentPage}
-                    limit={itemsPerPage}
+                    onChange={handleChangePage}
+                    limit={limit}
                     color='success'
                     variant='light'
                     radius='full'
@@ -160,19 +149,19 @@ const AnggotaAdminComponent = () => {
             >
               {dataAnggota.map((anggota, index) => (
                 <TableRow key={anggota.id || `anggota-${index}`}>
-                  <TableCell>{(currentPage - 1) * itemsPerPage + index + 1}</TableCell>
-                  <TableCell>{anggota.user_id.name}</TableCell>
-                  <TableCell>{anggota.user_id.aboutme || '-'}</TableCell>
-                  <TableCell>{anggota.user_id.status}</TableCell>
+                  <TableCell>{(currentPage - 1) * limit + index + 1}</TableCell>
+                  <TableCell>{anggota?.user_id?.name}</TableCell>
+                  <TableCell>{anggota?.user_id?.aboutme || '-'}</TableCell>
+                  <TableCell>{anggota?.user_id?.status}</TableCell>
                   <TableCell>{
-                    dayjs(anggota.user_id.last_login_date).format('dddd, DD MMMM YYYY')
+                    dayjs(anggota?.user_id?.last_login_date).format('dddd, DD MMMM YYYY')
                   }</TableCell>
                   <TableCell>
                     {
-                      anggota.user_id.avatar ? (
+                      anggota?.user_id?.avatar ? (
                         <Image
-                          src={anggota.user_id.avatar}
-                          alt={anggota.user_id.name}
+                          src={anggota?.user_id?.avatar}
+                          alt={anggota?.user_id?.name}
                           className='w-12 h-12 rounded-md object-cover'
                         />
                       ) : (

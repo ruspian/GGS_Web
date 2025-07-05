@@ -64,8 +64,6 @@ const UserAdminComponent = () => {
         }
       });
 
-      console.log('response', response);
-
 
       if (response.data.success) {
         addToast({ title: response.data.message, variant: 'success' });
