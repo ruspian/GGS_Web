@@ -41,19 +41,6 @@ app.use("/api/about", aboutRouter);
 app.use("/api/kegiatan", kegiatanRouter);
 app.use("/api/anggota", anggotaRouter);
 app.use("/api/galeri", galeriRouter);
-// --- GLOBAL ERROR HANDLING MIDDLEWARE ---
-app.use((err, req, res, next) => {
-  console.error("----------------------------------------------------");
-  console.error("KESALAHAN SERVER TERTANGKAP OLEH GLOBAL HANDLER:");
-  console.error(err.stack); // cetak stack trace lengkap dari error
-  console.error("----------------------------------------------------");
-
-  res.status(err.statusCode || 500).json({
-    message: err.message || "Kesalahan Pada Server, Coba Lagi Nanti!",
-    error: true,
-    success: false,
-  });
-});
 
 // jalankan servet
 databaseConnect()
