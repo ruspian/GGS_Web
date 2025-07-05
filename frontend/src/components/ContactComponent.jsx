@@ -5,7 +5,6 @@ import { FaRegAddressBook } from "react-icons/fa";
 import { MdOutlineAttachEmail, MdPhoneInTalk } from "react-icons/md";
 import { motion } from 'framer-motion'; // Import motion
 
-// Assuming you have these assets in your '../assets/' directory
 import bubleKotak from '../assets/bubleKotak.png';
 
 const ContactComponent = () => {
