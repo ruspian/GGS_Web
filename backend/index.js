@@ -11,6 +11,7 @@ import uploadFileRouter from "./routes/uploadFileRoute.js";
 import kegiatanRouter from "./routes/kegiatanRoute.js";
 import anggotaRouter from "./routes/anggotaRoute.js";
 import galeriRouter from "./routes/galeriRoute.js";
+import commentRouter from "./routes/commentRoute.js";
 
 // inisialisasi dotenv
 dotenv.config();
@@ -41,18 +42,19 @@ app.use("/api/about", aboutRouter);
 app.use("/api/kegiatan", kegiatanRouter);
 app.use("/api/anggota", anggotaRouter);
 app.use("/api/galeri", galeriRouter);
+app.use("/api/comment", commentRouter);
 
 // jalankan servet
-databaseConnect();
-// .then(() => {
-//   app.listen(process.env.BACKEND_PORT, () => {
-//     console.log(
-//       `Server running on http://localhost:${process.env.BACKEND_PORT}`
-//     );
-//   });
-// })
-// .catch((err) => {
-//   console.error("Koneksi Database Gagal Fatal:", err);
-// });
+databaseConnect()
+  .then(() => {
+    app.listen(process.env.BACKEND_PORT, () => {
+      console.log(
+        `Server running on http://localhost:${process.env.BACKEND_PORT}`
+      );
+    });
+  })
+  .catch((err) => {
+    console.error("Koneksi Database Gagal Fatal:", err);
+  });
 
-export default app;
+// export default app;

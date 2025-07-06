@@ -11,8 +11,6 @@ const KegiatanComponent = () => {
   const kegiatanData = useSelector((state) => state.kegiatan.data);
   const kegiatanStatus = useSelector((state) => state.kegiatan.status);
   const kegiatanError = useSelector((state) => state.kegiatan.error);
-  const currentPage = useSelector((state) => state.kegiatan.currentPage);
-  const limit = useSelector((state) => state.kegiatan.limit);
 
 
   const dispatch = useDispatch();
@@ -20,20 +18,20 @@ const KegiatanComponent = () => {
 
 
   // Fungsi untuk memicu pengambilan data kegiatan dari Redux
-  const refreshFetchKegiatanData = useCallback(async (pageToFetch, limitToFetch) => {
+  const refreshFetchKegiatanData = useCallback(async () => {
 
     // Dispatch thunk fetchKegiatanThunk dengan parameter page dan limit
-    await dispatch(fetchKegiatanThunk({ page: pageToFetch, limit: limitToFetch }));
+    await dispatch(fetchKegiatanThunk({}));
   }, [dispatch]);
 
   // panggil refreshFetchKegiatanData saat komponen dimuat
   useEffect(() => {
     // cek status kegiatan dan isi parameter
-    if (currentPage && limit && (kegiatanStatus === 'idle' || kegiatanStatus === 'failed')) {
+    if ((kegiatanStatus === 'idle' || kegiatanStatus === 'failed')) {
       // jika status idle atau failed, maka panggil refreshFetchKegiatanData
-      refreshFetchKegiatanData(currentPage, limit);
+      refreshFetchKegiatanData();
     }
-  }, [refreshFetchKegiatanData, currentPage, limit, kegiatanStatus]);
+  }, [refreshFetchKegiatanData, kegiatanStatus]);
 
   // Tampilkan toast error jika ada error dari Redux
   useEffect(() => {

@@ -270,3 +270,122 @@ export const getKegiatanByIdController = async (req, res) => {
     });
   }
 };
+
+// controller like dan dislike kegiatan
+export const likeDislikeKegiatanController = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { action, kegiatanId } = req.body; // action => like/dislike
+
+    // Validasi Autentikasi
+    if (!userId) {
+      return res.status(401).json({
+        message: "Anda belum login, silahkan login terlebih dahulu!",
+        success: false,
+        error: true,
+      });
+    }
+
+    // Validasi ID Kegiatan
+    if (!kegiatanId) {
+      return res.status(400).json({
+        message: "ID kegiatan diperlukan.",
+        success: false,
+        error: true,
+      });
+    }
+
+    // Cari kegiatan berdasarkan ID
+    const kegiatan = await KegiatanModel.findById(kegiatanId);
+
+    // Pastikan kegiatan ditemukan
+    if (!kegiatan) {
+      return res.status(404).json({
+        message: "Kegiatan tidak ditemukan!",
+        success: false,
+        error: true,
+      });
+    }
+
+    // Inisialisasi array like dan dislike jika belum ada
+    if (!kegiatan.like) kegiatan.like = [];
+    if (!kegiatan.dislike) kegiatan.dislike = [];
+
+    // Cek apakah user sudah like atau dislike
+    const userHasLiked = kegiatan.like.includes(userId);
+    const userHasDisliked = kegiatan.dislike.includes(userId);
+
+    // let message = "";
+
+    // Logika Like/Dislike
+    if (action === "like") {
+      if (userHasLiked) {
+        // Jika sudah like, maka batalkan like
+        kegiatan.like = kegiatan.like.filter(
+          (id) => id.toString() !== userId.toString()
+        );
+        // message = "Like dibatalkan.";
+      } else {
+        // Jika belum like, tambahkan like
+        kegiatan.like.push(userId);
+        // message = "Kegiatan disukai!";
+
+        // Jika sebelumnya dislike, batalkan dislike
+        if (userHasDisliked) {
+          kegiatan.dislike = kegiatan.dislike.filter(
+            (id) => id.toString() !== userId.toString()
+          );
+        }
+      }
+    } else if (action === "dislike") {
+      if (userHasDisliked) {
+        // Jika sudah dislike, maka batalkan dislike (hapus dari array dislike)
+        kegiatan.dislike = kegiatan.dislike.filter(
+          (id) => id.toString() !== userId.toString()
+        );
+        // message = "Dislike dibatalkan.";
+      } else {
+        // Jika belum dislike, tambahkan dislike
+        kegiatan.dislike.push(userId);
+        // message = "Kegiatan tidak disukai!";
+
+        // Jika sebelumnya like, batalkan like
+        if (userHasLiked) {
+          kegiatan.like = kegiatan.like.filter(
+            (id) => id.toString() !== userId.toString()
+          );
+        }
+      }
+    } else {
+      return res.status(400).json({
+        message: "Aksi tidak valid. Gunakan 'like' atau 'dislike'.",
+        success: false,
+        error: true,
+      });
+    }
+
+    // Simpan perubahan ke database
+    await kegiatan.save();
+
+    // Kirim respons berhasil
+    return res.status(200).json({
+      message: "Oke!",
+      success: true,
+      error: false,
+      data: {
+        _id: kegiatan._id,
+        likeCount: kegiatan.like.length,
+        dislikeCount: kegiatan.dislike.length,
+        userLiked: kegiatan.like.includes(userId),
+        userDisliked: kegiatan.dislike.includes(userId),
+      },
+    });
+  } catch (error) {
+    console.error("Error pada likeDislikeKegiatanController:", error);
+    return res.status(500).json({
+      message: error.message || "Kesalahan Pada Server, Coba Lagi Nanti!",
+      error: true,
+      success: false,
+    });
+  }
+};

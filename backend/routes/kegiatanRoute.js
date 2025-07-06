@@ -5,6 +5,7 @@ import {
   editKegiatanController,
   getAllKegiatanController,
   getKegiatanByIdController,
+  likeDislikeKegiatanController,
 } from "../controllers/kegiatanController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 import { adminMiddleware } from "../middlewares/adminMiddleware.js";
@@ -30,6 +31,11 @@ kegiatanRouter.delete(
   authMiddleware,
   adminMiddleware,
   deleteKegiatanController
+);
+kegiatanRouter.post(
+  "/action-like-dislike-kegiatan",
+  authMiddleware,
+  likeDislikeKegiatanController
 );
 
 export default kegiatanRouter;

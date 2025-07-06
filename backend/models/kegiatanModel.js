@@ -18,22 +18,18 @@ const kegiatanSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    like: {
-      type: Number,
-      default: 0,
-    },
-    dislike: {
-      type: Number,
-      default: 0,
-    },
-    read: {
-      type: Number,
-      default: 0,
-    },
-    comment: {
-      type: Number,
-      default: 0,
-    },
+    like: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    dislike: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     commentId: {
       type: Schema.Types.ObjectId,
       ref: "Comment",

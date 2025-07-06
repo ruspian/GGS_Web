@@ -6,7 +6,7 @@ import UserModel from "../models/userModel.js";
 export const createCommentController = async (req, res) => {
   try {
     const userId = req.userId; // ambil dari authMiddleware
-    const { comment, kegiatanId } = req.body;
+    const { comment, kegiatanId, date } = req.body;
 
     // pastikan user ada
     if (!userId) {
@@ -31,6 +31,7 @@ export const createCommentController = async (req, res) => {
       kegiatanId,
       userId,
       comment,
+      date,
     });
 
     // masukkan komentar ke user
@@ -49,6 +50,51 @@ export const createCommentController = async (req, res) => {
       success: true,
       error: false,
       data: newComment,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "Internal Server Error",
+      error: true,
+      success: false,
+    });
+  }
+};
+
+// controller ambil data comment
+export const getCommentByKegiatanController = async (req, res) => {
+  try {
+    let { kegiatanId, limit, skip } = req.body;
+
+    skip = parseInt(skip) || 0;
+    limit = parseInt(limit) || 3;
+
+    // pastikan kegiatan ada
+    if (!kegiatanId) {
+      return res.status(400).json({
+        message: "Belum ada kegiatan!",
+        success: false,
+        error: true,
+      });
+    }
+
+    // ambil comment
+    const comment = await CommentModel.find({ kegiatanId })
+      .populate("userId")
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .skip(skip);
+
+    // ambil jumlah komentar dari kegiatan
+    const commentCount = await CommentModel.countDocuments({ kegiatanId });
+
+    // kembalikan response
+    return res.status(200).json({
+      message: "Data comment berhasil diambil!",
+      success: true,
+      error: false,
+      data: comment,
+      commentCount: commentCount,
+      limit: limit,
     });
   } catch (error) {
     return res.status(500).json({

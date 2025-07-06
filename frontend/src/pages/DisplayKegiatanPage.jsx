@@ -1,19 +1,39 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom';
 import { fetchKegiatanByIdThunk } from '../store/kegiatanSliceRedux';
-import { Breadcrumb, Button, Carousel, Form, Image, Input } from 'antd';
+import { Breadcrumb, Carousel, Image } from 'antd';
 import dayjs from 'dayjs';
-import { FaRegCommentDots, FaRegEye } from 'react-icons/fa';
+import { FaRegCommentDots } from 'react-icons/fa';
+import { FiShare2 } from 'react-icons/fi';
 import { BiDislike, BiLike } from 'react-icons/bi';
-import TextArea from 'antd/es/input/TextArea';
+import KomentarComponent from '../components/KomentarComponent';
+import FormKomentarComponent from '../components/FormKomentarComponent';
+import { addToast } from '@heroui/react'
+import FetchFromAxios from '../utils/AxiosUtil';
+import getAPI from '../common/getAPI';
+
+
+const COMMENT_PER_LOAD = 3;
 
 const DisplayKegiatanPage = () => {
+
+  const [comment, setComment] = useState([]);
+  const [commentCount, setCommentCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // state untuk like dan dislike
+  const [currentLikeCount, setCurrentLikeCount] = useState(0);
+  const [currentDislikeCount, setCurrentDislikeCount] = useState(0);
+  const [userHasLiked, setUserHasLiked] = useState(false);
+  const [userHasDisliked, setUserHasDisliked] = useState(false);
+
 
   const params = useParams();
   const dispatch = useDispatch();
 
   const selectedKegiatanRedux = useSelector((state) => state.kegiatan.selectedKegiatan);
+  const userRedux = useSelector((state) => state.user);
 
 
   // fetch data kegiatan dengan thunk
@@ -30,7 +50,129 @@ const DisplayKegiatanPage = () => {
   }, [fetchKegiatanById, params.id]);
 
 
-  console.log("selectedKegiatanRedux", selectedKegiatanRedux);
+  // ambil komentar dari backend
+  const fetchKomentar = useCallback(async (id, page = 1) => {
+    // pastikan id kegiatan ada
+    if (!id) {
+      addToast({ title: "Kegiatan tidak ditemukan.", variant: 'error' });
+      setComment([]);
+      setCommentCount(0);
+      return;
+    }
+
+    try {
+
+      const skip = (page - 1) * COMMENT_PER_LOAD;
+
+      // kirim request ke backend
+      const response = await FetchFromAxios({
+        ...getAPI.getComment,
+        data: {
+          kegiatanId: id,
+          skip: skip,
+          limit: COMMENT_PER_LOAD
+        },
+      });
+
+      console.log('response', response);
+
+
+      if (response.data.success) {
+        setCommentCount(response.data.commentCount || 0); // Set total count dari backend
+
+        if (page === 1) {
+          // Jika ini permintaan halaman pertama, ganti komentar yang ada
+          setComment(response.data.data || []);
+        } else {
+          // Jika ini permintaan "load more", tambahkan komentar baru ke yang sudah ada
+          setComment(prevComments => [...prevComments, ...(response.data.data || [])]);
+        }
+        setCurrentPage(page); // Update halaman saat ini
+      }
+    } catch (error) {
+      addToast({ title: error.response?.data?.message || "Kesalahan saat mengambil komentar.", variant: 'error' });
+    }
+  }, []);
+
+  // panggil fetchKomentar saat komponen selectesKegiatanRedux berubah
+  useEffect(() => {
+
+    // pastikan id kegiatan ada
+    if (selectedKegiatanRedux?._id) {
+      fetchKomentar(selectedKegiatanRedux._id);
+    } else {
+      setComment([]);
+    }
+  }, [selectedKegiatanRedux, fetchKomentar]);
+
+  const onSuccessAddComment = () => {
+    fetchKomentar(selectedKegiatanRedux._id);
+  };
+
+  // fungsi handle load more comment
+  const handleLoadMoreComment = () => {
+    fetchKomentar(selectedKegiatanRedux._id, currentPage + 1);
+  }
+
+  // fungsi handle kembalikan ke tampilan sedikit
+  const handleLoadLess = () => {
+    fetchKomentar(selectedKegiatanRedux._id, 1);
+  }
+
+  // cek apakah masih ada comment
+  const hasMoreComment = comment.length < commentCount;
+
+
+  // fungsi handle like dan dislike
+  const handleLikeDislike = useCallback(async (actionType) => {
+
+    // pastikan user ada
+    if (!userRedux || !userRedux._id) {
+      addToast({ title: "Anda belum login, silahkan login terlebih dahulu!", variant: 'error' });
+      return;
+    }
+
+    // cek juga id kegiatan
+    if (!selectedKegiatanRedux?._id) {
+      addToast({ title: "Kegiatan tidak ditemukan!", variant: 'error' });
+      return;
+    }
+
+    // kirim request ke backend
+    try {
+      const response = await FetchFromAxios({
+        ...getAPI.actionLikeDislikeKegiatan,
+        data: {
+          kegiatanId: selectedKegiatanRedux._id,
+          action: actionType
+        }
+      })
+
+      // jika sukses
+      if (response.data.success) {
+        // addToast({ title: response.data.message, variant: 'success' });
+        setCurrentLikeCount(response.data.data.likeCount);
+        setCurrentDislikeCount(response.data.data.dislikeCount);
+        setUserHasLiked(response.data.data.userHasLiked);
+        setUserHasDisliked(response.data.data.userHasDisliked);
+      }
+    } catch (error) {
+      addToast({ title: error.response?.data?.message || "Kesalahan saat mengambil komentar.", variant: 'error' });
+    }
+  }, [selectedKegiatanRedux, userRedux]);
+
+  useEffect(() => {
+    if (selectedKegiatanRedux) {
+      setCurrentLikeCount(selectedKegiatanRedux?.like?.length || 0);
+      setCurrentDislikeCount(selectedKegiatanRedux?.dislike?.length || 0);
+
+      const userId = userRedux?._id;
+      // cek apakah user sudah like atau dislike
+      setUserHasLiked(selectedKegiatanRedux?.like?.includes(userId));
+      setUserHasDisliked(selectedKegiatanRedux?.dislike?.includes(userId));
+    }
+  }, [selectedKegiatanRedux, userRedux]);
+
 
   return (
     <div className='h-auto'>
@@ -88,42 +230,71 @@ const DisplayKegiatanPage = () => {
 
         {/* komentar kegiatan */}
         <div className='flex justify-end px-4 gap-4'>
-          <small className='flex gap-2'>
+          {/* <small className='flex gap-2'>
             <FaRegEye size={20} />
             {selectedKegiatanRedux?.read}
-          </small>
+          </small> */}
 
-          <small className='flex gap-2'>
+          <small className='flex gap-2 cursor-pointer'>
             <FaRegCommentDots size={20} />
-            {selectedKegiatanRedux?.comment}
+            {commentCount}
           </small>
 
-          <small className='flex gap-2'>
-            <BiLike size={21} className='' />
-            {selectedKegiatanRedux?.like}
+          <small
+            className={`flex gap-2 cursor-pointer `}
+            onClick={() => handleLikeDislike('like')}
+          >
+            <BiLike size={21} className={`${userHasLiked ? 'text-blue-600' : 'text-gray-600'}`} />
+            {currentLikeCount}
           </small>
 
-          <small className='flex gap-2'>
-            <BiDislike size={21} className='' />
-            {selectedKegiatanRedux?.dislike}
+          <small
+            className={`flex gap-2 cursor-pointer `}
+            onClick={() => handleLikeDislike('dislike')}
+          >
+            <BiDislike size={21} className={`${userHasDisliked ? 'text-red-600' : 'text-gray-600'}`} />
+            {currentDislikeCount}
+          </small>
+
+          <small className='flex gap-2 cursor-pointer'>
+            <FiShare2 size={21} className='' />
           </small>
         </div>
 
-        <div className=''>
-          <Form
-            name="komentar"
-            layout="vertical"
-            className='w-full'
-          >
-            <Form.Item name="coment" label="Komentar" className='w-full'>
-              <TextArea />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Komentar
-              </Button>
-            </Form.Item>
-          </Form>
+        <div>
+          <KomentarComponent comment={comment} />
+
+          {
+            // tampilkan komentar lainnya jika komentar lebih dari 3
+            comment.length > 3 && (
+              // tampilkan tombol load more jika masih ada comment
+              hasMoreComment ? (
+                <div className='flex items-center justify-center'>
+                  <small
+                    className='cursor-pointer text-sm text-gray-500'
+                    onClick={handleLoadMoreComment}
+                  >
+                    Tampilkan lebih banyak komentar
+                  </small>
+                </div>
+              ) : (
+                <div className='flex items-center justify-center'>
+                  <small
+                    className='cursor-pointer text-sm text-gray-500'
+                    onClick={handleLoadLess}
+                  >
+                    Tampilkan lebih sedikit komentar
+                  </small>
+                </div>
+              )
+            )
+          }
+        </div>
+
+        <div>
+          <FormKomentarComponent
+            kegiatanId={selectedKegiatanRedux?._id || params.id}
+            onSuccessAddComment={onSuccessAddComment} />
         </div>
 
       </div>

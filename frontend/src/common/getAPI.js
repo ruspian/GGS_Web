@@ -1,4 +1,4 @@
-export const BACKEND_URL = import.meta.env.BACKEND_URL;
+export const BACKEND_URL = "http://localhost:3000";
 
 const getAPI = {
   register: {
@@ -61,6 +61,10 @@ const getAPI = {
     url: "/api/kegiatan/get-kegiatan-by-id",
     method: "POST",
   },
+  actionLikeDislikeKegiatan: {
+    url: "/api/kegiatan/action-like-dislike-kegiatan",
+    method: "POST",
+  },
   editKegiatan: {
     url: "/api/kegiatan/edit-kegiatan",
     method: "PUT",
@@ -84,6 +88,14 @@ const getAPI = {
   getGaleri: {
     url: "/api/galeri/get-galeri",
     method: "GET",
+  },
+  createComment: {
+    url: "/api/comment/create-comment",
+    method: "POST",
+  },
+  getComment: {
+    url: "/api/comment/get-comment",
+    method: "POST",
   },
 };
 
