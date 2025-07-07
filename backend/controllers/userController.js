@@ -9,8 +9,6 @@ export const registerUserController = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    console.log("req.body", req.body);
-
     // validasi email, nama, dan password
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -33,6 +31,8 @@ export const registerUserController = async (req, res) => {
     // hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+
+    console.log("hashedPassword", hashedPassword);
 
     // buat payload
     const payload = {
@@ -325,6 +325,7 @@ export const updateUserDetailController = async (req, res) => {
       password,
       mobile,
       aboutme,
+      job,
       facebook,
       instagram,
       twitter,
@@ -346,9 +347,9 @@ export const updateUserDetailController = async (req, res) => {
     const userUpdated = await UserModel.findByIdAndUpdate(userId, {
       name: name,
       email: email,
-      password: hashNewPassword,
       mobile: mobile,
       aboutme: aboutme,
+      job: job,
       social_media: {
         facebook: facebook,
         instagram: instagram,
@@ -359,6 +360,8 @@ export const updateUserDetailController = async (req, res) => {
         tiktok: tiktok,
         whatsapp: whatsapp,
       },
+      // jika password ada update dan kalo password tidak ada biarkan password lama
+      password: password ? hashNewPassword : undefined,
     });
 
     // cek apakah user suda di update
@@ -398,6 +401,62 @@ export const getAllUserController = async (req, res) => {
       error: false,
       success: true,
       data: getUsers,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "Kesalahan Pada Server, Coba Lagi Nanti!",
+      error: true,
+      success: false,
+    });
+  }
+};
+
+// controler ambil data pendiri
+export const getLeaderController = async (req, res) => {
+  try {
+    const getLeader = await UserModel.find({ statusUser: "Pendiri" })
+      .select("-password -refresh_token -access_token")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      message: "Berhasil mengambil data pendiri!",
+      error: false,
+      success: true,
+      data: getLeader,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || "Kesalahan Pada Server, Coba Lagi Nanti!",
+      error: true,
+      success: false,
+    });
+  }
+};
+
+// controller ambil data anggota berdasarkan id dari user
+export const getAnggotafromUserIdController = async (req, res) => {
+  try {
+    const { _id } = req.body;
+
+    // pastikan id dikirim dari frontend
+    if (!_id) {
+      return res.status(400).json({
+        message: "Anggota tidak ditemukan!",
+        error: true,
+        success: false,
+      });
+    }
+
+    // cari id anggota dari user
+    const anggotaFromUserId = await UserModel.findOne({ _id }).select(
+      "-password -refresh_token -access_token"
+    );
+
+    return res.status(200).json({
+      message: "Berhasil mengambil data anggota!",
+      error: false,
+      success: true,
+      data: anggotaFromUserId,
     });
   } catch (error) {
     return res.status(500).json({

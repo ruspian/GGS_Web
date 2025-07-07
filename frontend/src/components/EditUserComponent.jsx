@@ -83,12 +83,17 @@ const EditUserComponent = () => {
 
   // fungsi handle perubahan input
   const handleInputChange = (event) => {
+
+    // ambil value dan name
     const { name, value } = event.target;
     setInputData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
+
+  console.log("inputData", inputData);
+
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -122,6 +127,7 @@ const EditUserComponent = () => {
     } finally {
       setLoadingSubmit(false);
     }
+
 
 
   };
@@ -205,6 +211,15 @@ const EditUserComponent = () => {
                     variant='bordered'
                     placeholder="No. Hp anda!"
                     value={inputData.mobile}
+                    onChange={handleInputChange}
+                  />
+                  <Input
+                    label="Pekerjaan"
+                    labelPlacement="outside"
+                    name="job"
+                    variant='bordered'
+                    placeholder="Pekerjan anda!"
+                    value={inputData.job}
                     onChange={handleInputChange}
                   />
                   <Textarea

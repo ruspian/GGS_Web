@@ -89,6 +89,15 @@ const userShema = new mongoose.Schema(
       enum: ["Admin", "User"],
       default: "User",
     },
+    statusUser: {
+      type: String,
+      enum: ["Anggota", "Pendiri"],
+      default: "Anggota",
+    },
+    job: {
+      type: String,
+      default: null,
+    },
     commentId: {
       type: [mongoose.Schema.Types.ObjectId],
       ref: "Comment",

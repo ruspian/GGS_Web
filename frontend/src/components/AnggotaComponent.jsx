@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAnggotaThunk } from '../store/anggotaSliceRedux';
 import { Tooltip } from 'antd';
+import LeaderUserComponent from './LeaderUserComponent';
 
 const AnggotaComponent = () => {
 
@@ -41,7 +42,6 @@ const AnggotaComponent = () => {
     }
   })
 
-
   // Variants untuk animasi kontainer kartu 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -58,6 +58,8 @@ const AnggotaComponent = () => {
     hidden: { opacity: 0, y: 50 }, // Mulai dari bawah, tidak terlihat
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }, // Geser ke atas dan muncul
   };
+
+  console.log('dataAnggota', dataAnggota);
 
   return (
     <div className='h-auto relative overflow-hidden py-12'>
@@ -76,7 +78,7 @@ const AnggotaComponent = () => {
       <div className='container mx-auto px-6 md:px-20 py-6 relative z-10'>
         <div className='flex justify-center items-center'>
           <div className='flex flex-col px-6 md:mx-20 items-center justify-center text-center'>
-            <h1 className='text-3xl font-bold text-gray-600'>Anggota <span className='text-emerald-600'>Gorontalo Green School</span></h1>
+            <h1 className='text-3xl font-bold text-gray-600'>Kenali <span className='text-emerald-600'>Tim Kami</span></h1>
             <p className='text-gray-600 text-base py-2 leading-relaxed max-w-2xl'>
               Berikut adalah anggota-anggota hebat yang membentuk Gorontalo Green School. Mereka adalah individu-individu berdedikasi yang berkontribusi pada visi dan misi.
             </p>
@@ -91,57 +93,81 @@ const AnggotaComponent = () => {
           whileInView="visible"
           viewport={{ once: false, amount: 0.3 }}
         >
+          <div className='flex flex-col items-center justify-center gap-6'>
 
-          {
-            // card anggota
-            dataAnggota && dataAnggota.slice(0, 4).map((anggota, index) => (
-              <motion.div
-                key={index + anggota.user_id._id}
-                variants={cardVariants}
-                className="py-2 max-w-xs max-h-xs "
-              >
-                <Card>
-                  <CardHeader className="flex items-start w-full h-16 justify-between">
-                    <div>
-                      <h4 className="font-bold text-md">{anggota.user_id.name}</h4>
-                      <small className='text-gray-500 line-clamp-1'>{anggota.user_id.email}</small>
-                    </div>
-                    <Button variant='bordered' size='sm' color='success'>Profil</Button>
-                  </CardHeader>
-                  <CardBody className="w-full h-64 overflow-hidden my-2">
-                    <Image
-                      src={anggota.user_id.avatar}
-                      alt={`Foto ${anggota.user_id.name}`}
-                      className="object-cover w-full h-full rounded-md"
-                    />
-                  </CardBody>
-                  <CardFooter className='flex gap-4 items-center justify-center '>
-                    <Tooltip title={anggota.user_id.social_media.facebook || 'Belum ada'} placement='bottom'>
-                      <FaFacebook size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    </Tooltip>
+            {/* leader */}
+            <LeaderUserComponent dataAnggota={dataAnggota} cardVariants={cardVariants} />
 
-                    <Tooltip title={anggota.user_id.social_media.whatsapp || 'Belum ada'} placement='bottom'>
-                      <FaWhatsapp size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    </Tooltip>
+            {/* anggota */}
+            <div>
+              <h2>
+                <span className='text-2xl font-bold text-gray-600'>Anggota</span>
+              </h2>
+            </div>
 
-                    <Tooltip title={anggota.user_id.social_media.instagram || 'Belum ada'} placement='bottom'>
-                      <FaInstagram size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    </Tooltip>
+            <div className='flex flex-col md:flex-row items-center justify-center gap-6'>
 
-                    <Tooltip title={anggota.user_id.social_media.twitter || 'Belum ada'} placement='bottom'>
-                      <FaTwitter size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    </Tooltip>
+              {
+                // card anggota
+                dataAnggota && dataAnggota.slice(0, 4).map((anggota, index) => (
+                  <motion.div
+                    key={index + anggota?.user_id?._id}
+                    variants={cardVariants}
+                    className="py-2 max-w-xs max-h-xs "
+                  >
+                    <Card>
+                      <CardHeader className="flex items-start w-full h-8 justify-between">
 
-                    <Tooltip title={anggota.user_id.social_media.tiktok || 'Belum ada'} placement='bottom'>
-                      <FaTiktok size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    </Tooltip>
+                        <Button variant='bordered' size='sm' color='success'
+                        >
+                          <Link to={`/anggota/${anggota?.user_id?._id}`}>Profil</Link>
+                        </Button>
+                      </CardHeader>
+                      <CardBody className="max-w-64 h-64 overflow-hidden my-2">
+                        <Image
+                          src={anggota?.user_id?.avatar}
+                          alt={`Foto ${anggota?.user_id?.name}`}
+                          className="object-fit w-full h-full rounded-md bg-gray-400"
+                        />
+                      </CardBody>
+                      <CardFooter className='flex flex-col gap-4 max-w-64 items-start justify-start '>
+                        <div>
+                          <h4 className="font-bold text-md">{anggota?.user_id?.name}</h4>
+                          <small className='text-gray-500 line-clamp-1'>Praktisi Pendidikan</small>
+                        </div>
 
-                  </CardFooter>
-                </Card>
-              </motion.div>
+                        {/* <div className='text-sm'>
+                          <small>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugiat eum a amet fugit, modi rem repudiandae, laborum inventore, nobis quis error explicabo cum mollitia illo nisi accusamus dolore omnis dolorem.</small>
+                        </div> */}
+                        {/* <Tooltip title={anggota?.user_id?.social_media?.facebook || 'Belum ada'} placement='bottom'>
+                          <FaFacebook size={20} className='hover:text-emerald-600 cursor-pointer' />
+                        </Tooltip>
 
-            ))
-          }
+                        <Tooltip title={anggota?.user_id?.social_media?.whatsapp || 'Belum ada'} placement='bottom'>
+                          <FaWhatsapp size={20} className='hover:text-emerald-600 cursor-pointer' />
+                        </Tooltip>
+
+                        <Tooltip title={anggota?.user_id?.social_media?.instagram || 'Belum ada'} placement='bottom'>
+                          <FaInstagram size={20} className='hover:text-emerald-600 cursor-pointer' />
+                        </Tooltip>
+
+                        <Tooltip title={anggota?.user_id?.social_media?.twitter || 'Belum ada'} placement='bottom'>
+                          <FaTwitter size={20} className='hover:text-emerald-600 cursor-pointer' />
+                        </Tooltip>
+
+                        <Tooltip title={anggota?.user_id?.social_media?.tiktok || 'Belum ada'} placement='bottom'>
+                          <FaTiktok size={20} className='hover:text-emerald-600 cursor-pointer' />
+                        </Tooltip> */}
+
+                      </CardFooter>
+                    </Card>
+                  </motion.div>
+
+                ))
+              }
+            </div>
+          </div>
+
 
         </motion.div>
 

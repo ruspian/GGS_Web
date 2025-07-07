@@ -9,6 +9,7 @@ const initialValues = {
   currentPage: 1,
   limit: 6,
   status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
+  anggotaById: null,
   error: null,
 };
 
@@ -34,6 +35,39 @@ export const fetchAnggotaThunk = createAsyncThunk(
           totalPage: response.data.totalPage,
           currentPage: response.data.currentPage,
           limit: response.data.limit,
+        };
+      } else {
+        // jika gagal
+        return rejectWithValue(
+          response.data.message || "Gagal memuat data kegiatan."
+        );
+      }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Kesalahan koneksi atau server."
+      );
+    }
+  }
+);
+
+// thunk untuk ambil data anggota berdasarkan id
+export const fetchAnggotaByIdThunk = createAsyncThunk(
+  "anggota/fetchAnggotaByIdThunk",
+  async (_id, { rejectWithValue }) => {
+    try {
+      const response = await FetchFromAxios({
+        ...getAPI.getAnggotaById,
+        data: {
+          _id,
+        },
+      });
+
+      console.log("response", response);
+
+      // jika barhasil
+      if (response.data.success) {
+        return {
+          anggotaById: response.data.data,
         };
       } else {
         // jika gagal
@@ -77,6 +111,21 @@ const anggotaSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchAnggotaThunk.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+        state.data = []; // Kosongkan data jika gagal memuat
+      })
+      // --- fetchKegiatanById ---
+      .addCase(fetchAnggotaByIdThunk.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(fetchAnggotaByIdThunk.fulfilled, (state, action) => {
+        state.anggotaById = action.payload.anggotaById;
+        state.status = "succeeded";
+        state.error = null;
+      })
+      .addCase(fetchAnggotaByIdThunk.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
         state.data = []; // Kosongkan data jika gagal memuat

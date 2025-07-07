@@ -13,6 +13,10 @@ const getAPI = {
     url: "/api/user/login",
     method: "POST",
   },
+  getAnggotaFromUser: {
+    url: "/api/user/get-anggota-from-user",
+    method: "POST",
+  },
   user_details: {
     url: "/api/user/user-detail",
     method: "GET",
@@ -36,6 +40,10 @@ const getAPI = {
   updateUserDetail: {
     url: "/api/user/update-user-detail",
     method: "POST",
+  },
+  getLeader: {
+    url: "/api/user/get-leader",
+    method: "get",
   },
   createAbout: {
     url: "/api/about/create-about",
@@ -81,6 +89,7 @@ const getAPI = {
     url: "/api/anggota/get-all-anggota",
     method: "POST",
   },
+
   deleteAnggota: {
     url: "/api/anggota/delete-anggota",
     method: "DELETE",

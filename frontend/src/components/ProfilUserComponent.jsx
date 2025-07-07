@@ -1,132 +1,138 @@
 import { Card, CardBody, CardHeader, Image, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@heroui/react'
 import { useSelector } from 'react-redux';
-import { FaFacebook, FaInstagram, FaTwitter, FaLinkedinIn, FaGithub, FaYoutube, FaTiktok, FaWhatsapp } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaTwitter, FaLinkedinIn, FaGithub, FaYoutube, FaTiktok, FaWhatsapp, FaPhone, FaNetworkWired } from 'react-icons/fa';
+import { FiClipboard } from 'react-icons/fi';
+import { Tooltip } from 'antd';
 
 const ProfilUserComponent = () => {
   const userDetail = useSelector((state) => state.user);
   console.log("user detail from profil user component", userDetail);
 
 
-  // ubah object social media menjadi array
-  const socialMediaArray = userDetail.social_media ? Object.entries(userDetail.social_media) : [];
+  // // ubah object social media menjadi array
+  // const socialMediaArray = userDetail.social_media ? Object.entries(userDetail.social_media) : [];
 
 
-  // inisialisasi icon sesuai dengan social media sesuai data array
-  const socialMediaIcon = {
-    facebook: { icon: FaFacebook, accountName: null },
-    instagram: { icon: FaInstagram, accountName: null },
-    twitter: { icon: FaTwitter, accountName: null },
-    linkedin: { icon: FaLinkedinIn, accountName: null },
-    github: { icon: FaGithub, accountName: null },
-    youtube: { icon: FaYoutube, accountName: null },
-    tiktok: { icon: FaTiktok, accountName: null },
-    whatsapp: { icon: FaWhatsapp, accountName: null },
-  };
+  // // inisialisasi icon sesuai dengan social media sesuai data array
+  // const socialMediaIcon = {
+  //   facebook: { icon: FaFacebook, accountName: null },
+  //   instagram: { icon: FaInstagram, accountName: null },
+  //   twitter: { icon: FaTwitter, accountName: null },
+  //   linkedin: { icon: FaLinkedinIn, accountName: null },
+  //   github: { icon: FaGithub, accountName: null },
+  //   youtube: { icon: FaYoutube, accountName: null },
+  //   tiktok: { icon: FaTiktok, accountName: null },
+  //   whatsapp: { icon: FaWhatsapp, accountName: null },
+  // };
+
+
+  // console.log("social media array", socialMediaArray);
 
 
   return (
+
     <>
-      <div className='flex flex-col gap-4 py-4'>
+      <div className="w-full max-w-4xl flex items-center h-auto md:h-screen flex-wrap mx-auto mt-32 mb-10 md:-mt-8">
 
-        {/* detail */}
-        <div className='lg:mx-0 mx-2'>
-          <Card>
-            <CardHeader>
-              <h3 className='text-xl font-bold '>Detail</h3>
-            </CardHeader>
-            <CardBody className="overflow-visible">
+        {/* <!--Main Col--> */}
+        <div
+          id="profile"
+          className="w-full md:w-3/5 rounded-lg md:rounded-l-lg md:rounded-r-none shadow-2xl bg-white opacity-75 mx-6 md:mx-0"
+        >
+          <div className="p-4 md:p-12 text-center md:text-left">
+            {/* <!-- gambar di tampilan hp--> */}
 
-              <div className="flex flex-col lg:flex-row overflow-auto gap-4">
+            <div
+              className="block md:hidden rounded-full shadow-xl mx-auto -mt-16 h-48 w-48 bg-cover bg-center"
+              style={{ backgroundImage: `url(${userDetail.avatar})` }}
+            ></div>
 
-                <Image
-                  alt="Card background"
-                  className="object-cover rounded-xl"
-                  src={`https://app.requestly.io/delay/5000/${userDetail.avatar}`}
-                  width={270}
-                />
+            <h1 className="text-3xl font-bold pt-8 md:pt-0">{userDetail.name}</h1>
+            <div className="mx-auto md:mx-0 w-4/5 pt-3 border-b-2 border-green-500 opacity-25"></div>
+            <p className="pt-4 text-base font-bold flex items-center justify-center md:justify-start gap-4">
+              <FaNetworkWired size={16} className="fill-current text-green-700" />
+              Founder & Chief Executive Officer
+            </p>
 
-                <Table removeWrapper aria-label="Example static collection table">
+            <p className="pt-2 text-gray-600 text-xs md:text-sm flex items-center justify-center md:justify-start gap-4">
+              <svg className="h-4 fill-current text-green-700" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20">
+                <path
+                  d="M9 12H1v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6h-8v2H9v-2zm0-1H0V5c0-1.1.9-2 2-2h4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1h4a2 2 0 0 1 2 2v6h-9V9H9v2zm3-8V2H8v1h4z" />
+              </svg>
+              <span>{userDetail.job}</span>
+            </p>
 
-
-                  <TableHeader className='hidden'>
-                    <TableColumn className='hidden'></TableColumn>
-                    <TableColumn className='hidden'></TableColumn>
-                    <TableColumn className='hidden'></TableColumn>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow key="nama">
-                      <TableCell className='lg:min-w-52 font-bold'>Nama</TableCell>
-                      <TableCell className='w-0 font-bold'>:</TableCell>
-                      <TableCell className='font-semibold'>{userDetail.name}</TableCell>
-                    </TableRow>
-                    <TableRow key="email">
-                      <TableCell className='font-bold'>Email</TableCell>
-                      <TableCell className='font-bold'>:</TableCell>
-                      <TableCell className='font-semibold'>{userDetail.email}</TableCell>
-                    </TableRow>
-                    <TableRow key="mobile">
-                      <TableCell className='font-bold'>No. Hp</TableCell>
-                      <TableCell className='font-bold'>:</TableCell>
-                      <TableCell className='font-semibold'>{userDetail.mobile || "-"}</TableCell>
-                    </TableRow>
-                    <TableRow key="about">
-                      <TableCell className='font-bold grid'>Tentang saya</TableCell>
-                      <TableCell className='font-bold'>:</TableCell>
-                      <TableCell className='text-justify font-semibold'>{userDetail.aboutme || "-"}</TableCell>
-                    </TableRow>
-
-                  </TableBody>
-                </Table>
-              </div>
+            <p className="pt-2 text-gray-600 text-xs md:text-sm flex items-center justify-center md:justify-start">
+              <svg className="h-4 fill-current text-green-700 pr-4" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20">
+                <path
+                  d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm7.75-8a8.01 8.01 0 0 0 0-4h-3.82a28.81 28.81 0 0 1 0 4h3.82zm-.82 2h-3.22a14.44 14.44 0 0 1-.95 3.51A8.03 8.03 0 0 0 16.93 14zm-8.85-2h3.84a24.61 24.61 0 0 0 0-4H8.08a24.61 24.61 0 0 0 0 4zm.25 2c.41 2.4 1.13 4 1.67 4s1.26-1.6 1.67-4H8.33zm-6.08-2h3.82a28.81 28.81 0 0 1 0-4H2.25a8.01 8.01 0 0 0 0 4zm.82 2a8.03 8.03 0 0 0 4.17 3.51c-.42-.96-.74-2.16-.95-3.51H3.07zm13.86-8a8.03 8.03 0 0 0-4.17-3.51c.42.96.74 2.16.95 3.51h3.22zm-8.6 0h3.34c-.41-2.4-1.13-4-1.67-4S8.74 3.6 8.33 6zM3.07 6h3.22c.2-1.35.53-2.55.95-3.51A8.03 8.03 0 0 0 3.07 6z" />
+              </svg> {userDetail.email}
+            </p>
 
 
-            </CardBody>
-          </Card>
+            <p className="pt-2 text-gray-600 text-xs md:text-sm flex items-center justify-center md:justify-start gap-4">
+              <FaPhone size={16} className="fill-current text-green-700" />
+              <span>0{userDetail.mobile}</span>
+            </p>
+
+
+          </div>
+
+          {/* social media */}
+          <div className="flex flex-row gap-8 items-center justify-center md:justify-start md:ml-12 my-4">
+
+            <Tooltip title={userDetail.social_media?.facebook || 'Belum ada'} placement='bottom'>
+              <FaFacebook size={20} className='hover:text-emerald-600 cursor-pointer' />
+            </Tooltip>
+
+            <Tooltip title={userDetail.social_media?.whatsapp || 'Belum ada'} placement='bottom'>
+              <FaWhatsapp size={20} className='hover:text-emerald-600 cursor-pointer' />
+            </Tooltip>
+
+            <Tooltip title={userDetail.social_media?.instagram || 'Belum ada'} placement='bottom'>
+              <FaInstagram size={20} className='hover:text-emerald-600 cursor-pointer' />
+            </Tooltip>
+
+            <Tooltip title={userDetail.social_media?.twitter || 'Belum ada'} placement='bottom'>
+              <FaTwitter size={20} className='hover:text-emerald-600 cursor-pointer' />
+            </Tooltip>
+
+            <Tooltip title={userDetail.social_media?.tiktok || 'Belum ada'} placement='bottom'>
+              <FaTiktok size={20} className='hover:text-emerald-600 cursor-pointer' />
+            </Tooltip>
+
+          </div>
+
         </div>
 
-        {/* sosmed */}
-        <div className=' lg:mx-0 mx-2'>
-          <Card>
-            <CardHeader>
-              <h3 className='text-xl font-bold '>Sosial Media</h3>
-            </CardHeader>
-            <CardBody className="overflow-visible">
-
-              {
-                socialMediaArray && socialMediaArray.map((sosmed, index) => {
-
-                  // destruktur sosmed
-                  const [platform, account] = sosmed;
-
-                  // jika account ada
-                  if (account) {
-
-                    // ambil icon dan accountName dari socialMediaIcon
-                    const IconSosmed = socialMediaIcon[platform].icon;
-                    const accountNameSosmed = socialMediaIcon[platform].accountName;
-
-                    return (
-                      <div key={index} className="flex flex-row gap-2 items-center">
-                        <IconSosmed />
-                        <span className='font-semibold'>{accountNameSosmed || account}</span>
-                      </div>
-                    )
-                  }
-
-                  // jika account null
-                  return null
-
-                })
-
-              }
-
-
-
-            </CardBody>
-          </Card>
+        {/* <!--Img Col--> */}
+        <div className="w-full md:w-2/5 bg-gray-400 rounded-md">
+          <Image src={userDetail.avatar} className="rounded-none md:rounded-lg shadow-2xl hidden lg:block" />
         </div>
       </div>
+
+      {/* tentang */}
+      <div className='md:rounded-r-lg md:rounded-l-none mb-4 md:-mt-20 mx-auto opacity-75 p-6'>
+        <div className='text-center justify-center'>
+          <div>
+            <h3 className='text-md font-bold '>Tentang</h3>
+          </div>
+          <p className="pt-2 text-gray-600 text-xs md:text-sm flex items-center justify-center md:justify-start gap-4">
+            {userDetail.aboutme}
+          </p>
+          <div className="overflow-visible">
+          </div>
+        </div>
+      </div>
+
+
+
+
     </>
+
+
   )
 }
 

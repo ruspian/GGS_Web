@@ -79,7 +79,7 @@ const AboutPage = () => {
               label="Misi"
               span={3}
             >
-              {/* PERBAIKAN: Pastikan misi adalah array sebelum map */}
+
               {aboutItem.misi && Array.isArray(aboutItem.misi) && aboutItem.misi.length > 0 ? (
                 <ul className="list-disc list-inside pl-4"> {/* Gunakan unordered list untuk misi */}
                   {aboutItem.misi.map((misi, index) => (

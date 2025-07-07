@@ -17,6 +17,7 @@ import GaleriAdminComponent from "../components/GaleriAdminComponent";
 import UserAdminComponent from "../components/UserAdminComponent";
 import AboutPage from "../pages/AboutPage";
 import ContactPage from "../pages/ContactPage";
+import DisplayProfilUserPage from "../pages/DisplayProfilUserPage";
 
 
 const router = createBrowserRouter([
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: 'anggota',
         element: <AnggotaPage />
+      },
+      {
+        path: 'anggota/:id',
+        element: <DisplayProfilUserPage />
       },
       {
         path: 'tentang',

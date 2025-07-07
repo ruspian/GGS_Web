@@ -8,6 +8,8 @@ import {
   uploadAvatarController,
   updateUserDetailController,
   getAllUserController,
+  getLeaderController,
+  getAnggotafromUserIdController,
 } from "../controllers/userController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 import upload from "../middlewares/multerMiddleware.js";
@@ -37,5 +39,7 @@ userRouter.get(
   adminMiddleware,
   getAllUserController
 );
+userRouter.get("/get-leader", getLeaderController);
+userRouter.post("/get-anggota-from-user", getAnggotafromUserIdController);
 
 export default userRouter;
