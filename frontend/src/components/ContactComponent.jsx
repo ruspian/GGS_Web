@@ -1,7 +1,7 @@
 import { Image } from '@heroui/react';
 import React from 'react';
 import fullContactImage from '../assets/fullContactImage.png';
-import { FaRegAddressBook } from "react-icons/fa";
+import { FaInstagram, FaRegAddressBook } from "react-icons/fa";
 import { MdOutlineAttachEmail, MdPhoneInTalk } from "react-icons/md";
 import { motion } from 'framer-motion'; // Import motion
 
@@ -86,7 +86,7 @@ const ContactComponent = () => {
           >
             <h1 className='text-4xl md:text-5xl font-bold text-emerald-600 mb-4'>Hubungi Kami</h1>
             <p className='text-gray-600 text-base leading-relaxed'>
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit. Accusantium eligendi iste deserunt repudiandae voluptatem, praesentium harum iusto mollitia veritatis obcaecati odio, cum officia, at odit minus sed sapiente error nobis.
+              Mari bersama kami membangun generasi lestari
             </p>
 
             {/* Alamat Kantor */}
@@ -106,6 +106,18 @@ const ContactComponent = () => {
               </div>
             </motion.div>
 
+            {/* Imstagram */}
+            <motion.div
+              className='flex flex-row items-start gap-4'
+              variants={itemVariants}
+            >
+              <FaInstagram className='text-2xl text-emerald-600 shrink-0' />
+              <div>
+                <h2 className='text-xl font-bold text-gray-800'>Instagram</h2>
+                <p className='text-gray-600 text-base'>@gorontalo_green_school</p>
+              </div>
+            </motion.div>
+
             {/* Telepon */}
             <motion.div
               className='flex flex-row items-start gap-4'
@@ -114,9 +126,7 @@ const ContactComponent = () => {
               <MdPhoneInTalk className='text-2xl text-emerald-600 shrink-0' />
               <div>
                 <h2 className='text-xl font-bold text-gray-800'>Telepon</h2>
-                <p className='text-gray-600 text-base'>+62 812-12121212</p>
-                <p className='text-gray-600 text-base'>+62 812-13131313</p>
-                <p className='text-gray-600 text-base'>+62 812-14141414</p>
+                <p className='text-gray-600 text-base'>+62 811-4341124</p>
               </div>
             </motion.div>
 
@@ -128,9 +138,7 @@ const ContactComponent = () => {
               <MdOutlineAttachEmail className='text-2xl text-emerald-600 shrink-0' />
               <div>
                 <h2 className='text-xl font-bold text-gray-800'>Email</h2>
-                <p className='text-gray-600 text-base'>info@gorontalogreenschool.com</p>
-                <p className='text-gray-600 text-base'>gorontalogreenschool@gmail.com</p>
-                <p className='text-gray-600 text-base'>support@gorontalogreenschool.com</p>
+                <p className='text-gray-600 text-base'>ggs.gogreen@gmail.com</p>
               </div>
             </motion.div>
 

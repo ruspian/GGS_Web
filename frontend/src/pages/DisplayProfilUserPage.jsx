@@ -45,9 +45,9 @@ const DisplayProfilUserPage = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2, duration: 0.6 }}
             >
-              <h2 className="text-xl font-bold leading-tight text-black dark:text-white sm:text-4xl lg:text-5xl">
+              {/* <h2 className="text-xl font-bold leading-tight text-black dark:text-white sm:text-4xl lg:text-5xl">
                 Halo 👋 Saya
-              </h2>
+              </h2> */}
 
               <motion.h2
                 className="text-xl font-bold text-black dark:text-white sm:text-4xl lg:text-5xl mt-2"
@@ -58,13 +58,13 @@ const DisplayProfilUserPage = () => {
                 {anggota.name}
               </motion.h2>
 
-              <small className="text-gray-500 dark:text-gray-400">
-                {anggota.statusUser === "Pendiri" ? "Founder & Chief Executive Officer" : anggota.statusUser}
+              <small className="text-gray-500 dark:text-gray-400 ml-1">
+                {anggota.job}
               </small>
 
               <div className="mt-4 md:mt-8">
                 <p className="text-lg leading-relaxed text-gray-600 dark:text-gray-300">
-                  {anggota.aboutme}
+                  {anggota.aboutme ? anggota.aboutme : '......'}
                 </p>
               </div>
 

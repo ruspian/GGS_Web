@@ -80,7 +80,7 @@ const AnggotaComponent = () => {
           <div className='flex flex-col px-6 md:mx-20 items-center justify-center text-center'>
             <h1 className='text-3xl font-bold text-gray-600'>Kenali <span className='text-emerald-600'>Tim Kami</span></h1>
             <p className='text-gray-600 text-base py-2 leading-relaxed max-w-2xl'>
-              Berikut adalah anggota-anggota hebat yang membentuk Gorontalo Green School. Mereka adalah individu-individu berdedikasi yang berkontribusi pada visi dan misi.
+              Berikut adalah anggota-anggota hebat yang membentuk Gorontalo Green School. Mereka adalah individu-individu berdedikasi yang berkontribusi pada pendidikan berbasis lingkungan.
             </p>
           </div>
         </div>
@@ -133,7 +133,7 @@ const AnggotaComponent = () => {
                       <CardFooter className='flex flex-col gap-4 max-w-64 items-start justify-start '>
                         <div>
                           <h4 className="font-bold text-md">{anggota?.user_id?.name}</h4>
-                          <small className='text-gray-500 line-clamp-1'>Praktisi Pendidikan</small>
+                          <small className='text-gray-500 line-clamp-1'>{anggota?.user_id?.job}</small>
                         </div>
 
                         {/* <div className='text-sm'>

@@ -4,6 +4,7 @@ import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAboutThunk } from '../store/aboutSliceRedux';
 import { Link } from 'react-router-dom';
+import logo from '../assets/logo.png';
 
 const AboutComponent = () => {
 
@@ -43,10 +44,10 @@ const AboutComponent = () => {
     <div className='h-auto'>
       <div className='flex flex-col items-center justify-center md:flex-row gap-4 px-6 md:mx-20 my-8 py-6 border rounded-sm shadow-xl'>
 
-        <div>
+        <div className='w-60 h-60 pt-10'>
           <Image
             alt={`aboutImage-${aboutImage}`}
-            src={aboutImage}
+            src={logo}
             className="w-full h-full object-cover rounded-md animate-float1"
           />
         </div>

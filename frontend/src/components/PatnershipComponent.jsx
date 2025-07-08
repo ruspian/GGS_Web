@@ -3,8 +3,8 @@ import { motion } from 'framer-motion'
 import burungIndonesia from '../assets/burungIndonesia.png'
 import salafiyah from '../assets/salafiyah.png'
 import madrasah from '../assets/madrasah.png'
-import bumn from '../assets/bumn.png'
-import unknownLogo from '../assets/unknownLogo.png'
+import bekalPemimpin from '../../public/bekalPemimpin.png'
+import dlh from '../../public/dlh.png'
 
 const PatnershipComponent = () => {
   return (
@@ -38,12 +38,12 @@ const PatnershipComponent = () => {
             className='md:w-20 md:h-20 w-12 h-12 mx-2 grayscale hover:grayscale-0'
           />
           <motion.img
-            src={bumn}
+            src={bekalPemimpin}
             alt='burungIndonesia'
             className='md:w-20 md:h-20 w-12 h-12 mx-2 grayscale hover:grayscale-0'
           />
           <motion.img
-            src={unknownLogo}
+            src={dlh}
             alt='burungIndonesia'
             className='md:w-20 md:h-20 w-12 h-12 mx-2 grayscale hover:grayscale-0'
           />

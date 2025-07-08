@@ -51,7 +51,7 @@ const ProfilUserComponent = () => {
             <div className="mx-auto md:mx-0 w-4/5 pt-3 border-b-2 border-green-500 opacity-25"></div>
             <p className="pt-4 text-base font-bold flex items-center justify-center md:justify-start gap-4">
               <FaNetworkWired size={16} className="fill-current text-green-700" />
-              Founder & Chief Executive Officer
+              {userDetail.statusUser === "Anggota" && userDetail.job}
             </p>
 
             <p className="pt-2 text-gray-600 text-xs md:text-sm flex items-center justify-center md:justify-start gap-4">
@@ -60,7 +60,7 @@ const ProfilUserComponent = () => {
                 <path
                   d="M9 12H1v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6h-8v2H9v-2zm0-1H0V5c0-1.1.9-2 2-2h4V2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v1h4a2 2 0 0 1 2 2v6h-9V9H9v2zm3-8V2H8v1h4z" />
               </svg>
-              <span>{userDetail.job}</span>
+              <span>{userDetail.statusUser}</span>
             </p>
 
             <p className="pt-2 text-gray-600 text-xs md:text-sm flex items-center justify-center md:justify-start">
@@ -72,10 +72,10 @@ const ProfilUserComponent = () => {
             </p>
 
 
-            <p className="pt-2 text-gray-600 text-xs md:text-sm flex items-center justify-center md:justify-start gap-4">
+            {/* <p className="pt-2 text-gray-600 text-xs md:text-sm flex items-center justify-center md:justify-start gap-4">
               <FaPhone size={16} className="fill-current text-green-700" />
               <span>0{userDetail.mobile}</span>
-            </p>
+            </p> */}
 
 
           </div>
@@ -87,17 +87,17 @@ const ProfilUserComponent = () => {
               <FaFacebook size={20} className='hover:text-emerald-600 cursor-pointer' />
             </Tooltip>
 
-            <Tooltip title={userDetail.social_media?.whatsapp || 'Belum ada'} placement='bottom'>
+            {/* <Tooltip title={userDetail.social_media?.whatsapp || 'Belum ada'} placement='bottom'>
               <FaWhatsapp size={20} className='hover:text-emerald-600 cursor-pointer' />
-            </Tooltip>
+            </Tooltip> */}
 
             <Tooltip title={userDetail.social_media?.instagram || 'Belum ada'} placement='bottom'>
               <FaInstagram size={20} className='hover:text-emerald-600 cursor-pointer' />
             </Tooltip>
 
-            <Tooltip title={userDetail.social_media?.twitter || 'Belum ada'} placement='bottom'>
+            {/* <Tooltip title={userDetail.social_media?.twitter || 'Belum ada'} placement='bottom'>
               <FaTwitter size={20} className='hover:text-emerald-600 cursor-pointer' />
-            </Tooltip>
+            </Tooltip> */}
 
             <Tooltip title={userDetail.social_media?.tiktok || 'Belum ada'} placement='bottom'>
               <FaTiktok size={20} className='hover:text-emerald-600 cursor-pointer' />

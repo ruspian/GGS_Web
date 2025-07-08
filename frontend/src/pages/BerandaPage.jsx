@@ -10,8 +10,10 @@ import BackgroundMotionComponent from "../components/BackgroundMotionComponent";
 import GaleryComponent from "../components/GaleryComponent";
 import AnggotaComponent from "../components/AnggotaComponent";
 import ContactComponent from "../components/ContactComponent";
-import like from '../assets/like.png';
-import bubleKotak from '../assets/bubleKotak.png';
+import foto1 from '../../public/1.jpeg';
+import foto2 from '../../public/2.jpeg';
+import foto6 from '../../public/6.jpeg';
+import foto3 from '../../public/3.jpeg';
 
 const BerandaPage = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -28,12 +30,12 @@ const BerandaPage = () => {
 
 
           {/* KIRI */}
-          <div className="md:w-1/2 text-center md:text-left space-y-4">
+          <div className="md:w-1/2 text-center md:text-left space-y-2">
             <h1 className="text-5xl md:text-7xl font-[Faculty-Glyphic] font-bold text-emerald-800 leading-tight">
               GORONTALO GREEN SCHOOL
             </h1>
-            <p className="text-lg text-gray-600">
-              Membangun masa depan berkelanjutan melalui pendidikan yang ramah lingkungan dan berorientasi pada teknologi.
+            <p className="text-2xl text-gray-800">
+              Tumbuh Bersama Generasi Lestari
             </p>
 
             <div className="flex flex-wrap items-center gap-4 justify-center md:justify-start">
@@ -60,27 +62,27 @@ const BerandaPage = () => {
               transition={{ duration: 0.8, delay: 0.3 }}
             >
               <img
-                src="https://images.unsplash.com/photo-1589104760192-ccab0ce0d90f?q=80&w=867&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src={foto1}
                 alt="chart"
                 className="rounded-lg w-full"
               />
             </motion.div>
 
             <motion.div
-              className="w-[170px] h-[250px] bg-white shadow-2xl rounded-md p-3 absolute top-0 right-0 md:block hidden"
+              className="w-[200px] h-[200px] bg-white shadow-2xl rounded-md p-3 absolute top-5 -right-4 md:block hidden"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
               <img
-                src="https://images.unsplash.com/photo-1667996112087-f5c023384766?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEwfHx8ZW58MHx8fHx8"
+                src={foto3}
                 alt="chart"
-                className="object-cover rounded-lg w-full h-full"
+                className="rounded-lg w-full h-full"
               />
             </motion.div>
 
             {/* AVATAR */}
-            <motion.img
+            {/* <motion.img
               src={like}
               alt="user"
               className="w-16 h-16 rounded-full shadow-lg absolute top-56 md:top-48 md:right-32 right-60"
@@ -96,34 +98,45 @@ const BerandaPage = () => {
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.5 }}
-            />
-
-
-
-
+            /> */}
             <motion.div
+              className="w-[200px] h-[200px] bg-white shadow-2xl rounded-md p-3 absolute -bottom-16 left-0 md:block hidden"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              <img
+                src={foto6}
+                alt="chart"
+                className="rounded-lg w-full h-full"
+              />
+            </motion.div>
+
+
+
+            {/* <motion.div
               className="bg-white rounded-xl shadow-lg p-3 w-[220px] absolute bottom-16 md:bottom-0 right-0 animate-float1"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7 }}
             >
               <img
-                src="https://images.unsplash.com/photo-1557734864-c78b6dfef1b1?q=80&w=1034&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src=""
                 alt="chart"
                 className="rounded-lg w-full"
               />
-            </motion.div>
+            </motion.div> */}
 
             <motion.div
-              className="bg-white rounded-xl shadow-lg p-3 w-[220px] md:w-[300px] md:h-[160px] h-36 absolute  md:top-72 top-80 md:-bottom-0 md:left-5 animate-float1"
+              className="bg-white rounded-xl shadow-lg p-3 w-[220px] md:w-[400px] md:h-[200px] h-36 absolute  md:top-64 top-80 md:-right-10 animate-float1"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7 }}
             >
               <img
-                src="https://images.unsplash.com/photo-1600792170156-7fdc12ed6733?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzF8fHNla29sYWglMjBpbmRvJTIwaW5kb25lc2lhfGVufDB8fDB8fHww"
+                src={foto2}
                 alt="chart"
-                className="rounded-lg w-full h-full"
+                className="object-cover rounded-lg w-full h-full"
               />
             </motion.div>
           </div>

@@ -110,7 +110,7 @@ const AnggotaPage = () => {
                   <CardHeader className="flex items-start w-full justify-between">
                     <div>
                       <h4 className="font-bold text-md">{anggota.user_id.name}</h4>
-                      <small className='text-gray-500 line-clamp-1'>{anggota.user_id.email}</small>
+                      <small className='text-gray-500 line-clamp-1'>{anggota.user_id.job}</small>
                     </div>
                     <Button variant='bordered' size='sm' color='success'>Profil</Button>
                   </CardHeader>
@@ -121,27 +121,6 @@ const AnggotaPage = () => {
                       className="object-cover w-[400px] h-[400px] bg-emerald-500"
                     />
                   </CardBody>
-                  <CardFooter className='flex gap-4 items-center justify-center '>
-                    <Tooltip title={anggota.user_id.social_media.facebook || 'Belum ada'} placement='bottom'>
-                      <FaFacebook size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    </Tooltip>
-
-                    <Tooltip title={anggota.user_id.social_media.whatsapp || 'Belum ada'} placement='bottom'>
-                      <FaWhatsapp size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    </Tooltip>
-
-                    <Tooltip title={anggota.user_id.social_media.instagram || 'Belum ada'} placement='bottom'>
-                      <FaInstagram size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    </Tooltip>
-
-                    <Tooltip title={anggota.user_id.social_media.twitter || 'Belum ada'} placement='bottom'>
-                      <FaTwitter size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    </Tooltip>
-
-                    <Tooltip title={anggota.user_id.social_media.tiktok || 'Belum ada'} placement='bottom'>
-                      <FaTiktok size={20} className='hover:text-emerald-600 cursor-pointer' />
-                    </Tooltip>
-                  </CardFooter>
                 </Card>
               </motion.div>
             ))}
