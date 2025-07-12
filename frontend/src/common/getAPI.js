@@ -1,4 +1,4 @@
-export const BACKEND_URL = "ggs-web-jet.vercel.app";
+export const BACKEND_URL = "https://ggs-web-jet.vercel.app";
 
 const getAPI = {
   register: {
