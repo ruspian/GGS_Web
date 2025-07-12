@@ -29,6 +29,8 @@ app.use(
   })
 );
 
+const frontendPreviewRegex = /^https:\/\/ggs-web-il31(-\w+)*\.vercel\.app$/;
+
 // --- KONFIGURASI CORS YANG DIPERBARUI ---
 const allowedOrigins = [];
 
@@ -49,7 +51,11 @@ const corsOptions = {
   origin: (origin, callback) => {
     // Izinkan permintaan tanpa origin
     // atau jika origin ada di daftar yang diizinkan.
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      frontendPreviewRegex.test(origin)
+    ) {
       callback(null, true);
     } else {
       console.log(`CORS blocked: Origin ${origin} is not allowed.`);
