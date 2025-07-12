@@ -1,46 +1,32 @@
-import React, { useCallback, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchAboutThunk } from '../store/aboutSliceRedux';
 import { addToast } from '@heroui/react';
 import dayjs from 'dayjs';
-import { Descriptions } from 'antd';
+import { Descriptions, Skeleton } from 'antd'; // Import Skeleton untuk indikator loading
 
 const AboutPage = () => {
-
   const dispatch = useDispatch();
 
   const aboutData = useSelector((state) => state.about.data);
   const aboutStatus = useSelector((state) => state.about.status);
   const aboutError = useSelector((state) => state.about.error);
 
-  console.log('aboutData', aboutData[0]);
-  console.log('aboutStatus', aboutStatus);
-  console.log('aboutError', aboutError);
-
-  const aboutItem = aboutData[0];
-
-  console.log('aboutItem', aboutItem);
-
-
-
+  const aboutItem = aboutData && aboutData.length > 0 ? aboutData[0] : null;
 
   const fetchAboutData = useCallback(async () => {
     await dispatch(fetchAboutThunk());
   }, [dispatch]);
 
-
   // panggil fetchAboutData saat komponen dimuat
   useEffect(() => {
-
     // cek status redux
     if (aboutStatus === 'idle' || aboutStatus === 'failed') {
       fetchAboutData();
     }
   }, [fetchAboutData, aboutStatus]);
 
-
   useEffect(() => {
-
     // cek error redux
     if (aboutError && aboutStatus === 'failed') {
       // tampilkan pesan error
@@ -48,6 +34,20 @@ const AboutPage = () => {
     }
   }, [aboutError, aboutStatus]);
 
+  // Tampilkan Skeleton loading jika masih fetching
+  if (aboutStatus === 'loading') {
+    return (
+      <div className='h-auto relative overflow-hidden py-12'>
+        <div className='container mx-auto px-6 md:px-20 py-6 relative z-20'>
+          <div className='flex flex-col mb-8'>
+            <h1 className='text-3xl font-bold text-emerald-600 '>Tentang Kami</h1>
+            <hr className='text-emerald-600 w-full border mt-4' />
+          </div>
+          <Skeleton active paragraph={{ rows: 6 }} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='h-auto relative overflow-hidden py-12'>
@@ -58,30 +58,31 @@ const AboutPage = () => {
           <hr className='text-emerald-600 w-full border mt-4' />
         </div>
 
-        {/* Tampilkan deskripsi hanya jika aboutItem ada */}
+        {/* Tampilan deskripsi hanya jika aboutItem ada */}
         {aboutItem ? (
-          <Descriptions className='w-full flex flex-col'>
-            <Descriptions.Item label="Nama" span={3}>{aboutItem.name || 'N/A'}</Descriptions.Item>
+          <Descriptions
+            bordered
+            column={1}
+          >
+            <Descriptions.Item label="Nama" span={1}>{aboutItem.name || 'N/A'}</Descriptions.Item>
             <Descriptions.Item
               label="Tanggal Berdiri"
-              span={3}
+              span={1}
             >
-              {/* aboutItem.tanggal dan format */}
               {aboutItem.tanggal ? dayjs(aboutItem.tanggal).format('DD MMMM YYYY') : 'N/A'}
             </Descriptions.Item>
             <Descriptions.Item
               label="Visi"
-              span={3}
+              span={1}
             >
               {aboutItem.visi || 'N/A'}
             </Descriptions.Item>
             <Descriptions.Item
               label="Misi"
-              span={3}
+              span={1}
             >
-
               {aboutItem.misi && Array.isArray(aboutItem.misi) && aboutItem.misi.length > 0 ? (
-                <ul className="list-disc list-inside pl-4"> {/* Gunakan unordered list untuk misi */}
+                <ul className="list-disc list-inside pl-4">
                   {aboutItem.misi.map((misi, index) => (
                     <li key={index} className="mb-1">
                       {misi}
@@ -94,20 +95,20 @@ const AboutPage = () => {
             </Descriptions.Item>
             <Descriptions.Item
               label="Tentang"
-              span={3}
+              span={1}
             >
               {aboutItem.about || 'N/A'}
             </Descriptions.Item>
           </Descriptions>
         ) : (
-          // Fallback jika aboutItem null/undefined setelah loading selesai
+          // Fallback jika aboutItem null/undefined setelah loading selesai dan tidak ada data
           <div className='py-8 text-center text-gray-500'>
             <p>Tidak ada data profil untuk ditampilkan.</p>
           </div>
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AboutPage
+export default AboutPage;
