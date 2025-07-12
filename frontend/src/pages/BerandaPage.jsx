@@ -69,7 +69,7 @@ const BerandaPage = () => {
             </motion.div>
 
             <motion.div
-              className="w-[200px] h-[200px] bg-white shadow-2xl rounded-md p-3 absolute top-5 -right-4 md:block hidden"
+              className="w-[200px] h-[200px] bg-white shadow-2xl rounded-md p-3 absolute bottom-0 right-0 md:top-5 md:-right-4"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
@@ -81,26 +81,8 @@ const BerandaPage = () => {
               />
             </motion.div>
 
-            {/* AVATAR */}
-            {/* <motion.img
-              src={like}
-              alt="user"
-              className="w-16 h-16 rounded-full shadow-lg absolute top-56 md:top-48 md:right-32 right-60"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5 }}
-            />
-
-            <motion.img
-              src={bubleKotak}
-              alt="user"
-              className="w-28 h-28 absolute top-0 left-56 md:left-16"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5 }}
-            /> */}
             <motion.div
-              className="w-[200px] h-[200px] bg-white shadow-2xl rounded-md p-3 absolute -bottom-16 left-0 md:block hidden"
+              className="w-[200px] h-[200px] bg-white shadow-2xl rounded-md p-3 absolute -bottom-8 left-28 md:-bottom-16 md:left-0"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
@@ -113,22 +95,8 @@ const BerandaPage = () => {
             </motion.div>
 
 
-
-            {/* <motion.div
-              className="bg-white rounded-xl shadow-lg p-3 w-[220px] absolute bottom-16 md:bottom-0 right-0 animate-float1"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.7 }}
-            >
-              <img
-                src=""
-                alt="chart"
-                className="rounded-lg w-full"
-              />
-            </motion.div> */}
-
             <motion.div
-              className="bg-white rounded-xl shadow-lg p-3 w-[220px] md:w-[400px] md:h-[200px] h-36 absolute  md:top-64 top-80 md:-right-10 animate-float1"
+              className="bg-white rounded-xl shadow-lg p-3 w-[220px] md:w-[400px] md:h-[200px] h-36 absolute  md:top-64 -bottom-48 md:-right-10 animate-float1"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7 }}

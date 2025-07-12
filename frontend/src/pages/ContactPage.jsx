@@ -1,6 +1,6 @@
 import React from 'react'
 import { AnimatePresence, motion } from 'framer-motion';
-import { FaRegAddressBook } from 'react-icons/fa';
+import { FaInstagram, FaRegAddressBook } from 'react-icons/fa';
 import { MdOutlineAttachEmail, MdPhoneInTalk } from 'react-icons/md';
 import { Button, Form, Input, Textarea } from '@heroui/react';
 
@@ -54,35 +54,6 @@ const ContactPage = () => {
             animate="visible"
             exit="exit"
           >
-            <motion.div className='mb-4' variants={containerVariants}>
-              <Form
-                className="w-full flex flex-col gap-4"
-                validationErrors={'errors'}
-                onSubmit={'onSubmit'}
-              >
-                <Input
-                  label="Email Anda"
-                  labelPlacement="outside"
-                  name="email"
-                  placeholder="Masukkan Nama"
-                />
-                <Input
-                  label="Subject"
-                  labelPlacement="outside"
-                  name="subject"
-                  placeholder="Ada yang bisa kami bantu?"
-                />
-                <Textarea
-                  label="Pesan Anda"
-                  labelPlacement="outside"
-                  name="message"
-                  placeholder="Masukkan Pesan"
-                />
-                <Button type="submit" variant="bordered" color='success' radius='sm'>
-                  Submit
-                </Button>
-              </Form>
-            </motion.div>
 
             <div className='flex flex-col gap-4'>
               <motion.div
@@ -109,9 +80,19 @@ const ContactPage = () => {
                 <MdPhoneInTalk className='text-2xl text-emerald-600 shrink-0' />
                 <div>
                   <h2 className='text-xl font-bold text-gray-800'>Telepon</h2>
-                  <p className='text-gray-600 text-base'>+62 812-12121212</p>
-                  <p className='text-gray-600 text-base'>+62 812-13131313</p>
-                  <p className='text-gray-600 text-base'>+62 812-14141414</p>
+                  <p className='text-gray-600 text-base'>+62 811-4341124</p>
+                </div>
+              </motion.div>
+
+              {/* Imstagram */}
+              <motion.div
+                className='flex flex-row items-start gap-4'
+                variants={cardVariants}
+              >
+                <FaInstagram className='text-2xl text-emerald-600 shrink-0' />
+                <div>
+                  <h2 className='text-xl font-bold text-gray-800'>Instagram</h2>
+                  <p className='text-gray-600 text-base'>@gorontalo_green_school</p>
                 </div>
               </motion.div>
 
@@ -123,9 +104,7 @@ const ContactPage = () => {
                 <MdOutlineAttachEmail className='text-2xl text-emerald-600 shrink-0' />
                 <div>
                   <h2 className='text-xl font-bold text-gray-800'>Email</h2>
-                  <p className='text-gray-600 text-base'>info@gorontalogreenschool.com</p>
-                  <p className='text-gray-600 text-base'>gorontalogreenschool@gmail.com</p>
-                  <p className='text-gray-600 text-base'>support@gorontalogreenschool.com</p>
+                  <p className='text-gray-600 text-base'>ggs.gogreen@gmail.com</p>
                 </div>
               </motion.div>
             </div>

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom';
 import { fetchKegiatanByIdThunk } from '../store/kegiatanSliceRedux';
-import { Breadcrumb, Carousel, Image } from 'antd';
+import { Breadcrumb, Button, Carousel, Image, Input, Modal } from 'antd';
 import dayjs from 'dayjs';
 import { FaRegCommentDots } from 'react-icons/fa';
 import { FiShare2 } from 'react-icons/fi';
@@ -27,6 +27,10 @@ const DisplayKegiatanPage = () => {
   const [currentDislikeCount, setCurrentDislikeCount] = useState(0);
   const [userHasLiked, setUserHasLiked] = useState(false);
   const [userHasDisliked, setUserHasDisliked] = useState(false);
+
+  // state untuk share
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [shareLink, setShareLink] = useState('');
 
 
   const params = useParams();
@@ -174,6 +178,34 @@ const DisplayKegiatanPage = () => {
   }, [selectedKegiatanRedux, userRedux]);
 
 
+  // --- FUNGSI SHARE ---
+  const handleShareClick = () => {
+    const currentUrl = window.location.href; // Dapatkan URL halaman saat ini
+    setShareLink(currentUrl);
+    setIsShareModalOpen(true);
+  };
+
+  const handleCopyLink = () => {
+    if (shareLink) {
+      // Gunakan document.execCommand('copy') karena navigator.clipboard mungkin tidak berfungsi di iframe
+      const el = document.createElement('textarea');
+      el.value = shareLink;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      addToast({ title: 'Link disalin ke clipboard', variant: 'success' });
+    } else {
+      addToast({ title: 'Link tidak tersedia', variant: 'error' });
+    }
+  };
+
+  const handleCloseShareModal = () => {
+    setIsShareModalOpen(false);
+    setShareLink(''); // Bersihkan link saat modal ditutup
+  };
+
+
   return (
     <div className='h-auto'>
 
@@ -230,10 +262,6 @@ const DisplayKegiatanPage = () => {
 
         {/* komentar kegiatan */}
         <div className='flex justify-end px-4 gap-4'>
-          {/* <small className='flex gap-2'>
-            <FaRegEye size={20} />
-            {selectedKegiatanRedux?.read}
-          </small> */}
 
           <small className='flex gap-2 cursor-pointer'>
             <FaRegCommentDots size={20} />
@@ -256,7 +284,7 @@ const DisplayKegiatanPage = () => {
             {currentDislikeCount}
           </small>
 
-          <small className='flex gap-2 cursor-pointer'>
+          <small className='flex gap-2 cursor-pointer' onClick={handleShareClick}>
             <FiShare2 size={21} className='' />
           </small>
         </div>
@@ -296,8 +324,31 @@ const DisplayKegiatanPage = () => {
             kegiatanId={selectedKegiatanRedux?._id || params.id}
             onSuccessAddComment={onSuccessAddComment} />
         </div>
-
       </div>
+
+      {/* Share Modal */}
+      <Modal
+        title='Bagikan Kegiatan'
+        open={isShareModalOpen}
+        onCancel={handleCloseShareModal}
+        footer={[
+          <Button key="copy" type="primary" onClick={handleCopyLink}>
+            Salin
+          </Button>,
+          <Button key="close" onClick={handleCloseShareModal}>
+            Tutup
+          </Button>,
+        ]}
+      >
+        <Input
+          value={shareLink}
+          readOnly
+          style={{ marginBottom: 16 }}
+        />
+        <p className="text-sm text-gray-500">
+          Bagikan link kegiatan ini ke teman-teman Anda
+        </p>
+      </Modal>
     </div >
   )
 }
