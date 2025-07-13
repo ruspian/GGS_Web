@@ -29,45 +29,12 @@ app.use(
   })
 );
 
-const frontendPreviewRegex = /^https:\/\/ggs-web-il31(-\w+)*\.vercel\.app$/;
-
-// --- KONFIGURASI CORS YANG DIPERBARUI ---
-const allowedOrigins = [];
-
-if (process.env.FRONTEND_URL) {
-  allowedOrigins.push(process.env.FRONTEND_URL);
-}
-
-if (process.env.VERCEL_URL) {
-  allowedOrigins.push(`https://${process.env.VERCEL_URL}`);
-}
-
-// Tambahkan localhost untuk pengembangan
-if (process.env.NODE_ENV !== "production") {
-  allowedOrigins.push("http://localhost:5173");
-}
-
-const corsOptions = {
-  origin: (origin, callback) => {
-    // Izinkan permintaan tanpa origin
-    // atau jika origin ada di daftar yang diizinkan.
-    if (
-      !origin ||
-      allowedOrigins.includes(origin) ||
-      frontendPreviewRegex.test(origin)
-    ) {
-      callback(null, true);
-    } else {
-      console.log(`CORS blocked: Origin ${origin} is not allowed.`);
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Izinkan metode yang relevan
-  allowedHeaders: ["Content-Type", "Authorization"], // Izinkan header yang relevan
-  credentials: true, // jika menggunakan cookie/sesi
-};
-
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+);
 
 // routes
 app.use("/api/user", userRouter);
