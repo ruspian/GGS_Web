@@ -59,7 +59,6 @@ const AnggotaComponent = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }, // Geser ke atas dan muncul
   };
 
-  console.log('dataAnggota', dataAnggota);
 
   return (
     <div className='h-auto relative overflow-hidden py-12'>
@@ -136,28 +135,6 @@ const AnggotaComponent = () => {
                           <small className='text-gray-500 line-clamp-1'>{anggota?.user_id?.job}</small>
                         </div>
 
-                        {/* <div className='text-sm'>
-                          <small>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugiat eum a amet fugit, modi rem repudiandae, laborum inventore, nobis quis error explicabo cum mollitia illo nisi accusamus dolore omnis dolorem.</small>
-                        </div> */}
-                        {/* <Tooltip title={anggota?.user_id?.social_media?.facebook || 'Belum ada'} placement='bottom'>
-                          <FaFacebook size={20} className='hover:text-emerald-600 cursor-pointer' />
-                        </Tooltip>
-
-                        <Tooltip title={anggota?.user_id?.social_media?.whatsapp || 'Belum ada'} placement='bottom'>
-                          <FaWhatsapp size={20} className='hover:text-emerald-600 cursor-pointer' />
-                        </Tooltip>
-
-                        <Tooltip title={anggota?.user_id?.social_media?.instagram || 'Belum ada'} placement='bottom'>
-                          <FaInstagram size={20} className='hover:text-emerald-600 cursor-pointer' />
-                        </Tooltip>
-
-                        <Tooltip title={anggota?.user_id?.social_media?.twitter || 'Belum ada'} placement='bottom'>
-                          <FaTwitter size={20} className='hover:text-emerald-600 cursor-pointer' />
-                        </Tooltip>
-
-                        <Tooltip title={anggota?.user_id?.social_media?.tiktok || 'Belum ada'} placement='bottom'>
-                          <FaTiktok size={20} className='hover:text-emerald-600 cursor-pointer' />
-                        </Tooltip> */}
 
                       </CardFooter>
                     </Card>

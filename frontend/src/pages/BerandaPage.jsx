@@ -18,8 +18,6 @@ import foto3 from '../../public/3.jpeg';
 const BerandaPage = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-
-
   return (
     <main className="relative overflow-hidden">
 
