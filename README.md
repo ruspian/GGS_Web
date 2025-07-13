@@ -159,28 +159,6 @@ GGS_Web/
 ├── README.md
 ```
 
-## 🌐 API Endpoint Penting
-
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET /api/user/all`
-- `POST /api/anggota/create`
-- `POST /api/anggota/all`
-- `DELETE /api/anggota/delete/:id`
-- `POST /api/about/create`
-- `GET /api/about/get`
-- `PUT /api/about/edit`
-- `POST /api/kegiatan/create`
-- `GET /api/kegiatan/all`
-- `GET /api/kegiatan/get/:id`
-- `PUT /api/kegiatan/edit`
-- `DELETE /api/kegiatan/delete/:id`
-- `POST /api/kegiatan/like-dislike`
-- `POST /api/comment/create`
-- `POST /api/comment/get-paginated`
-- `POST /api/file/upload-image`
-- `POST /api/image/remove-background`
-
 ## 🤝 Kontribusi
 
 1. Fork repositori
