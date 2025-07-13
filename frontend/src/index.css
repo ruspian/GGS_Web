@@ -8,3 +8,16 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+#overlay {
+  mask-image: radial-gradient(
+    circle 120px at 50% 50%,
+    transparent 0%,
+    black 150px
+  );
+  -webkit-mask-image: radial-gradient(
+    circle 120px at 50% 50%,
+    transparent 0%,
+    black 150px
+  );
+}

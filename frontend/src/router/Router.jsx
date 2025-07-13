@@ -18,6 +18,7 @@ import UserAdminComponent from "../components/UserAdminComponent";
 import AboutPage from "../pages/AboutPage";
 import ContactPage from "../pages/ContactPage";
 import DisplayProfilUserPage from "../pages/DisplayProfilUserPage";
+import ErrorPage from "../pages/ErrorPage";
 
 
 const router = createBrowserRouter([
@@ -101,6 +102,10 @@ const router = createBrowserRouter([
       }
     ]
   },
+  {
+    path: '*',
+    element: <ErrorPage />
+  }
 ])
 
 export default router
