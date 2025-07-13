@@ -105,6 +105,18 @@ cd backend
 npm start
 ```
 
+atau gunakan nodemon
+
+```bash
+cd backend
+
+# Install nodemon
+npm install -g nodemon
+
+# Jalankan nodemon
+nodemon index.js
+```
+
 #### Frontend
 
 ```bash
